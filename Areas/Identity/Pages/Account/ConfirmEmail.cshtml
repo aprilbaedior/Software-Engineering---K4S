@@ -1,0 +1,23 @@
+@page
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Confirm Email";
+}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="card shadow-sm text-center" style="max-width: 480px; width: 100%; border-top: 5px solid #4F0C28; border-radius: 12px; padding: 2.5rem 2rem;">
+        <div style="font-size: 3.5rem; color: #4F0C28; margin-bottom: 1rem;">
+            <i class="bi bi-envelope-check-fill"></i>
+        </div>
+        <h2 style="font-family: 'Playfair Display', Georgia, serif; color: #4F0C28; font-weight: 700; margin-bottom: 0.75rem;">
+            Email Confirmed!
+        </h2>
+        <partial name="_StatusMessage" model="Model.StatusMessage" />
+        <p class="text-muted mt-2" style="font-size: 0.95rem;">
+            Your email has been successfully confirmed. You can now sign in to your account.
+        </p>
+        <a href="/Identity/Account/Login" class="btn mt-3" style="background-color: #4F0C28; color: white; border-radius: 8px; padding: 0.7rem 2rem; font-weight: 600; text-decoration: none; display: inline-block;">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+        </a>
+    </div>
+</div>

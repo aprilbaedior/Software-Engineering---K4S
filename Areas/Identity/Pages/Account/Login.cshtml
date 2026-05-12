@@ -1,0 +1,211 @@
+@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Krumpin 4 Success</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { min-height: 100vh; display: flex; flex-direction: column; font-family: 'Inter', sans-serif; background: #fff; }
+
+        /* Navbar */
+        .auth-nav {
+            background-color: #4F0C28;
+            padding: 0.85rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .auth-nav .brand {
+            color: #fff;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+        .auth-nav .nav-btn {
+            background: #C5D2F8;
+            color: #4F0C28;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .auth-nav .nav-btn:hover { background: #fff; color: #4F0C28; }
+
+        /* Split layout */
+        .auth-wrapper {
+            flex: 1;
+            display: flex;
+            min-height: calc(100vh - 58px - 200px);
+        }
+        .auth-panel-logo {
+            flex: 1;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            border-right: 1px solid #f0f0f0;
+        }
+        .auth-panel-logo img {
+            width: 100%;
+            max-width: 460px;
+            height: auto;
+        }
+        .auth-panel-logo .tagline {
+            margin-top: 1.5rem;
+            color: #4F0C28;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.1rem;
+            text-align: center;
+            font-style: italic;
+        }
+        .auth-panel-form {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            background: #fafafa;
+        }
+        .form-box {
+            width: 100%;
+            max-width: 420px;
+        }
+        .form-box h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: #4F0C28;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+        .form-box .subtitle {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-label { font-weight: 600; color: #4F0C28; margin-bottom: 0.4rem; display: block; font-size: 0.9rem; }
+        .form-control {
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus { border-color: #C5D2F8; outline: none; box-shadow: 0 0 0 3px rgba(197,210,248,0.25); }
+        .form-check { display: flex; align-items: center; gap: 0.5rem; margin: 1rem 0; }
+        .form-check-label { color: #4F0C28; font-size: 0.9rem; font-weight: 500; }
+        .btn-signin {
+            background: #4F0C28;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+        .btn-signin:hover { background: #3d0a1f; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79,12,40,0.25); }
+        .auth-links { margin-top: 1.5rem; text-align: center; }
+        .auth-links a { color: #4F0C28; text-decoration: none; display: block; margin: 0.5rem 0; font-size: 0.88rem; font-weight: 500; }
+        .auth-links a:hover { color: #7b1a42; text-decoration: underline; }
+        .text-danger { color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem; display: block; }
+
+        /* Footer */
+        .auth-footer {
+            background: #4F0C28;
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            padding: 1.25rem;
+            font-size: 0.82rem;
+        }
+        .auth-footer a { color: #C5D2F8; text-decoration: none; }
+
+        @@media (max-width: 768px) {
+            .auth-wrapper { flex-direction: column; }
+            .auth-panel-logo { border-right: none; border-bottom: 1px solid #f0f0f0; padding: 2rem 1rem; }
+            .auth-panel-logo img { max-width: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="auth-nav">
+        <a href="/" class="brand">K4S</a>
+        <a href="/Identity/Account/Register" class="nav-btn">Register</a>
+    </nav>
+
+    <div class="auth-wrapper">
+        <!-- Left: Logo Panel -->
+        <div class="auth-panel-logo">
+            <img src="~/images/k4s_logo.png" alt="K4S Logo" />
+            <p class="tagline">Empowering youth through creativity &amp; community</p>
+        </div>
+
+        <!-- Right: Form Panel -->
+        <div class="auth-panel-form">
+            <div class="form-box">
+                <h2>Sign In</h2>
+                <p class="subtitle">Welcome back! Please enter your credentials.</p>
+
+                <form id="account" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.Email" class="form-label">Email</label>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="Enter your email" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.Password" class="form-label">Password</label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" placeholder="Enter your password" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="Input.RememberMe" />
+                        <label class="form-check-label" asp-for="Input.RememberMe">Remember me?</label>
+                    </div>
+
+                    <button id="login-submit" type="submit" class="btn-signin">Sign In</button>
+
+                    <div class="auth-links">
+                        <a asp-page="./ForgotPassword">Forgot your password?</a>
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Don't have an account? Sign Up</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="auth-footer">
+        &copy; 2026 Krumpin 4 Success. All rights reserved. &nbsp;|&nbsp;
+        <a href="#">Privacy Policy</a> &nbsp;|&nbsp; <a href="#">Terms of Service</a>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>

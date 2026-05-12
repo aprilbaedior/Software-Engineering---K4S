@@ -1,0 +1,162 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Manager.InstructorAssignmentsModel
+@{
+    ViewData["Title"] = "Instructor Assignments";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-person-workspace me-2"></i> Assign Instructors to Sections
+            </h1>
+            <p class="text-muted mt-1">Assign approved instructors to course sections.</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Assignment Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-plus-circle me-2"></i> Create New Assignment
+        </div>
+        <div class="card-body">
+            @if (!Model.Instructors.Any())
+            {
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                No approved instructors available. Approve instructor requests first.
+            </div>
+            }
+            else if (!Model.Sections.Any())
+            {
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                No active sections available.
+            </div>
+            }
+            else
+            {
+            <form method="post" asp-page-handler="Assign">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label">Section <span class="text-danger">*</span></label>
+                            <select name="sectionId" class="form-select" required>
+                                <option value="">-- Select a Section --</option>
+                                @foreach (var sec in Model.Sections)
+                                {
+                                    <option value="@sec.SectionID">
+                                        [#@sec.SectionID] @(sec.ServiceName ?? "Unknown") | @sec.WeekDay
+                                        @if (sec.StartTime.HasValue && sec.EndTime.HasValue)
+                                        {
+                                            <text>@DateTime.Today.Add(sec.StartTime.Value).ToString("hh:mm tt") - @DateTime.Today.Add(sec.EndTime.Value).ToString("hh:mm tt")</text>
+                                        }
+                                        else
+                                        {
+                                            <text>Time TBD</text>
+                                        }
+                                        [@sec.Status]
+                                    </option>
+                                }
+                            </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Instructor <span class="text-danger">*</span></label>
+                        <select name="instructorEmail" class="form-select" required>
+                            <option value="">-- Select an Instructor --</option>
+                            @foreach (var inst in Model.Instructors)
+                                {
+                            <option value="@inst.Email">@inst.FullName (@inst.Email)</option>
+                                }
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-person-check me-1"></i> Assign
+                        </button>
+                    </div>
+                </div>
+            </form>
+            }
+        </div>
+    </div>
+
+    <!-- Current Assignments Table -->
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-table me-2"></i> Current Assignments
+            <span class="badge ms-1" style="background-color: #C5D2F8; color: #4F0C28;">@Model.Assignments.Count</span>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Assignments.Any())
+            {
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Instructor</th>
+                            <th>Instructor Email</th>
+                            <th>Section ID</th>
+                            <th>Service</th>
+                            <th>Assigned By</th>
+                            <th>Assigned Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var assignment in Model.Assignments)
+                            {
+                        <tr>
+                            <td><strong>@assignment.InstructorName</strong></td>
+                            <td>@assignment.InstructorEmail</td>
+                            <td>
+                                <span class="badge" style="background-color:#4F0C28;color:white;">
+                                    #@assignment.SectionID
+                                </span>
+                            </td>
+                            <td>@(assignment.ServiceName ?? "—")</td>
+                            <td>@assignment.AssignedBy</td>
+                            <td>@assignment.AssignedDate.ToString("MM/dd/yyyy")</td>
+                            <td>
+                                <form method="post" asp-page-handler="Remove" style="display:inline;">
+                                    <input type="hidden" name="assignmentId" value="@assignment.AssignmentID" />
+                                    <button type="submit" class="btn delete-btn"
+                                            style="width:35px;height:35px;border-radius:50%;"
+                                            title="Remove Assignment"
+                                            onclick="return confirm('Remove this instructor assignment?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+            }
+            else
+            {
+            <div class="text-center py-5">
+                <i class="bi bi-person-workspace" style="font-size: 3rem; color: #ccc;"></i>
+                <p class="text-muted mt-3">No instructor assignments have been made yet.</p>
+            </div>
+            }
+        </div>
+    </div>
+</div>

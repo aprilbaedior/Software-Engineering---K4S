@@ -1,0 +1,82 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Sections.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1> @Html.DisplayFor(model => model.Spring2026_Group1_Sections.ServiceName) - Edit</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Spring2026_Group1_Sections.SectionID" />
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.ServiceID" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Sections.ServiceID" class="form-control" />
+                <span asp-validation-for="Spring2026_Group1_Sections.ServiceID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.ServiceName" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Sections.ServiceName" class="form-control" />
+                <span asp-validation-for="Spring2026_Group1_Sections.ServiceName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.StartDate" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Sections.StartDate" class="form-control" />
+                <span asp-validation-for="Spring2026_Group1_Sections.StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.EndDate" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Sections.EndDate" class="form-control" />
+                <span asp-validation-for="Spring2026_Group1_Sections.EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Meeting Days <small class="text-muted">(select all that apply)</small></label>
+                <div class="d-flex flex-wrap gap-2 mt-1">
+                    @foreach (var day in new[] { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday" })
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="SelectedDays"
+                                   value="@day" id="edit_day_@day"
+                                   @(Model.SelectedDays.Contains(day) ? "checked" : "") />
+                            <label class="form-check-label" for="edit_day_@day">@day</label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.StartTime" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Sections.StartTime" class="form-control" />
+                <span asp-validation-for="Spring2026_Group1_Sections.StartTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.EndTime" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Sections.EndTime" class="form-control" />
+                <span asp-validation-for="Spring2026_Group1_Sections.EndTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.Status" class="control-label"></label>
+                <select asp-for="Spring2026_Group1_Sections.Status" class="form-control">
+                    <option value="">Select from list</option>
+                    <option value="Active">Active</option>
+                    <option value="Open">Open</option>
+                    <option value="Ended">Ended</option>
+                </select>
+                <span asp-validation-for="Spring2026_Group1_Sections.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

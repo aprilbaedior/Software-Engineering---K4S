@@ -1,0 +1,119 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "K4SVirtual Home Page";
+    string displayName = Model.UserDisplayName ?? User.Identity.Name;
+}
+
+<style>
+    .home-hero {
+        text-align: center;
+        padding: 2.5rem 1rem 1rem;
+    }
+    .home-hero h1 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #4F0C28;
+        margin-bottom: 1.5rem;
+    }
+    .home-logo {
+        max-width: 320px;
+        width: 100%;
+        margin: 0 auto 2.5rem;
+        display: block;
+    }
+    .values-section {
+        padding: 1rem 0 3rem;
+    }
+    .value-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 20px rgba(79,12,40,0.10);
+        border-top: 5px solid #C5D2F8;
+        padding: 2rem 1.75rem;
+        height: 100%;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .value-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 28px rgba(79,12,40,0.15);
+    }
+    .value-card h3 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #4F0C28;
+        text-align: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #C5D2F8;
+    }
+    .value-card p {
+        color: #495057;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        text-align: center;
+        margin: 0;
+    }
+    .core-values-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    .core-value-badge {
+        background: linear-gradient(135deg, #C5D2F8, #a8b8f5);
+        color: #4F0C28;
+        font-weight: 700;
+        font-size: 0.82rem;
+        padding: 0.4em 1em;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+    }
+</style>
+
+<div class="home-hero">
+    <h1>Welcome, @displayName</h1>
+    <img src="~/images/k4s_logo.png" alt="K4S Logo" class="home-logo" />
+</div>
+
+<div class="container values-section">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="value-card">
+                <h3><i class="bi bi-bullseye me-2"></i>Our Mission</h3>
+                <p>
+                    Krumpin 4 Success, Inc. is a youth organization dedicated to decreasing risk-taking behaviors
+                    &amp; youth recidivism through providing creative activities and promoting academic stability,
+                    economic sufficiency, positive mental health and successful transition to productive citizenship.
+                    We cater to youth between the ages of 13–24.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="value-card">
+                <h3><i class="bi bi-eye me-2"></i>Our Vision</h3>
+                <p>
+                    Krumpin 4 Success, Inc.'s Vision is to become the leading youth organization which will
+                    encourage, equip, empower and enhance youths' foundation for life while promoting both
+                    college and career readiness.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="value-card">
+                <h3><i class="bi bi-star me-2"></i>Our Core Values</h3>
+                <div class="core-values-list">
+                    <span class="core-value-badge">Unity</span>
+                    <span class="core-value-badge">Trust</span>
+                    <span class="core-value-badge">Respect</span>
+                    <span class="core-value-badge">Self-Esteem</span>
+                    <span class="core-value-badge">Integrity</span>
+                    <span class="core-value-badge">Consistency</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,142 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Registration.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<link rel="stylesheet" href="~/CS395SI_Spring2023_Group1.styles.css" asp-append-version="true" />
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<h1>Registered Users</h1>
+
+<div>
+    <div class="subOptions">
+        @* <p><a asp-page="./Create">Create New User</a></p> should admin be able to create new users? *@
+
+        <form method="get" onsubmit="return validateSearchQuery()">
+            <div class="search-container">
+                <input type="text" name="SearchQuery" placeholder="Search..." value="@Model.SearchQuery"
+                    id="searchQueryInput">
+
+                <div class="search-icons">
+                    <button type="submit" class="search-button">
+                        <img class="icon" src="~/images/search.svg" alt="Search icon">
+                    </button>
+
+                    <div class="filter-dropdown">
+                        <button type="button" class="filter-button" onclick="toggleFilterDropdown()">
+                            <img class="icon" src="~/images/filter.svg" alt="Filter icon">
+                        </button>
+
+                        <select name="FilterBy" id="filterBy" class="hidden">
+                            <option value="Name" selected>Name</option>
+                            <option value="Email">Email</option>
+                            <option value="PhoneNum">Phone Number</option>
+                            <option value="Address">Address</option>
+                            <option value="ApplicationStatus">Application Status</option>
+                        </select>
+                    </div>
+
+                    <button type="button" onclick="resetFilters()" class="reset-button">
+                        <img class="icon" src="~/images/delete.svg" alt="delete icon" width="22" height="22">
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="studentsList">
+        @if ((Model.Spring2023_Group1_Profile_Sys != null && Model.Spring2023_Group1_Profile_Sys.Count == 0) 
+          && !string.IsNullOrEmpty(Model.SearchQuery))
+        {
+            <div style="text-align: center; margin-top: 50px;">
+                <img src="~/images/student-not-found.svg" alt="Student not found" style="width: 200px; height: auto;">
+                <p style="color: #a76d28; font-size: 18px; font-weight: bold;">Student not found.</p>
+            </div>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Spring2023_Group1_Profile_Sys[0].Name)</th>
+                        <th>@Html.DisplayNameFor(model => model.Spring2023_Group1_Profile_Sys[0].Email)</th>
+                        <th>@Html.DisplayNameFor(model => model.Spring2023_Group1_Profile_Sys[0].PhoneNum)</th>
+                        <th>@Html.DisplayNameFor(model => model.Spring2023_Group1_Profile_Sys[0].Address)</th>
+                        <th>@Html.DisplayNameFor(model => model.Spring2023_Group1_Profile_Sys[0].ApplicationStatus)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Spring2023_Group1_Profile_Sys)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PhoneNum)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                            <td>
+                                <span class="status-badge @(item.ApplicationStatus == "Approved" ? "approved" : "pending")">
+                                    @Html.DisplayFor(modelItem => item.ApplicationStatus)
+                                </span>
+                            </td>
+
+                            <td class="action-buttons">
+                                @* <a asp-page="./Edit" asp-route-id="@item.Email" class="btn edit-btn" title="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a> admin should not be editting students *@
+                                <a asp-page="./Details" asp-route-id="@item.Email" class="btn details-btn" title="View Details">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                                <a asp-page="./Delete" asp-route-id="@item.Email" class="btn delete-btn" title="Delete"
+                                    onclick="return confirm('Are you sure you want to delete this item?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                                @* <form method="post">
+                                    <input type="hidden" name="StudentEmail" value="@item.Email" />
+                                    <button type="submit" class="btn viewStudentSchedule-btn" title="View Student Schedule">
+                                        <i class="fas fa-stream"></i>
+
+                                    </button>
+                                </form> *@
+
+                                <form method="get" action="/StudentSchedule">
+    <input type="hidden" name="studentEmail" value="@item.Email" />
+    <button type="submit" class="btn viewStudentSchedule-btn" title="View Student Schedule">
+        <i class="fas fa-stream"></i>
+    </button>
+</form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<script>
+    function validateSearchQuery() {
+        const searchQuery = document.getElementById("searchQueryInput").value.trim();
+        if (!searchQuery) {
+            alert("Please enter a search query.");
+            return false;
+        }
+        return true;
+    }
+
+    function toggleFilterDropdown() {
+        const dropdown = document.getElementById("filterBy");
+        dropdown.classList.toggle("hidden");
+    }
+
+    function resetFilters() {
+        document.getElementById("searchQueryInput").value = "";
+        document.getElementById("filterBy").value = "Name";
+        window.location.href = window.location.pathname;
+    }
+</script>

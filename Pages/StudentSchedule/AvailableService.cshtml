@@ -1,0 +1,129 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.StudentSchedule.AvailableServiceModel
+@{
+    ViewData["Title"] = "Browse Services";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    .page-header {
+        background: #f8f9fa;
+        border-left: 5px solid #198754;
+        padding: 1.25rem 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    .page-header h2 { font-weight: 700; margin: 0; color: #1a1a2e; }
+    .page-header p { margin: 0.25rem 0 0; color: #6c757d; font-size: 0.9rem; }
+
+    .service-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid #e9ecef;
+        padding: 1.5rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 0.2s;
+    }
+    .service-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.14); }
+    .service-card h5 { font-weight: 700; color: #1a1a2e; margin-bottom: 0.75rem; }
+
+    .service-meta {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.75rem;
+    }
+    .meta-badge {
+        font-size: 0.78rem;
+        border-radius: 20px;
+        padding: 0.25em 0.75em;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+    .meta-freq { background-color: #e8f5e9; color: #2e7d32; }
+    .meta-hours { background-color: #f3e5f5; color: #6a1b9a; }
+
+    .service-card .desc {
+        color: #6c757d;
+        font-size: 0.9rem;
+        flex-grow: 1;
+        margin-bottom: 1rem;
+    }
+
+    .service-card form { margin-top: auto; }
+
+    .sections-btn {
+        background-color: #198754;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+        width: 100%;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .sections-btn:hover { background-color: #157347; }
+
+    .empty-state { text-align: center; padding: 3rem; color: #6c757d; }
+    .empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.4; }
+</style>
+
+<div class="page-header">
+    <h2><i class="bi bi-grid me-2 text-success"></i>Browse Services</h2>
+    <p>Select a service to view available sections and enroll</p>
+</div>
+
+@if (!Model.Spring2023_Group1_Services.Any())
+{
+    <div class="card shadow-sm">
+        <div class="card-body empty-state">
+            <i class="fas fa-inbox"></i>
+            <h5>No Services Available</h5>
+            <p>There are currently no services available. Please check back later.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var item in Model.Spring2023_Group1_Services)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card">
+                    <h5>@item.ServiceName</h5>
+
+                    <div class="service-meta">
+                        @if (!string.IsNullOrEmpty(item.ServiceFrequency))
+                        {
+                            <span class="meta-badge meta-freq">
+                                <i class="fas fa-calendar-alt"></i> @item.ServiceFrequency / week
+                            </span>
+                        }
+                        @if (item.ServiceHours > 0)
+                        {
+                            <span class="meta-badge meta-hours">
+                                <i class="fas fa-clock"></i> @item.ServiceHours hrs
+                            </span>
+                        }
+                    </div>
+
+                    <p class="desc">@(item.ServiceDescription ?? "No description available.")</p>
+
+                    <form method="post">
+                        <input type="hidden" name="serviceID" value="@item.ServiceID" />
+                        <button type="submit" class="sections-btn">
+                            <i class="fas fa-list-ul me-1"></i> View Available Sections
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+}

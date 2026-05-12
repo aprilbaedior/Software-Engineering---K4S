@@ -1,0 +1,307 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Admin.Reports.IndexModel
+@{
+    ViewData["Title"] = "Reports & Analytics";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-bar-chart-line-fill"></i> Reports & Analytics
+            </h1>
+            <p class="lead text-muted">Strategic insights and system-wide reporting dashboard</p>
+        </div>
+    </div>
+
+    <!-- Key Metrics Overview -->
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+                    <h6 class="card-title mt-2">Total Users</h6>
+                    <h2 class="mb-0">@Model.TotalUsers</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-mortarboard-fill" style="font-size: 2rem;"></i>
+                    <h6 class="card-title mt-2">Students</h6>
+                    <h2 class="mb-0">@Model.TotalStudents</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-badge-fill" style="font-size: 2rem;"></i>
+                    <h6 class="card-title mt-2">Instructors</h6>
+                    <h2 class="mb-0">@Model.TotalInstructors</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-grid-fill" style="font-size: 2rem;"></i>
+                    <h6 class="card-title mt-2">Services</h6>
+                    <h2 class="mb-0">@Model.TotalServices</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-calendar3-fill" style="font-size: 2rem;"></i>
+                    <h6 class="card-title mt-2">Sections</h6>
+                    <h2 class="mb-0">@Model.TotalSections</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-dark h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-bookmark-check-fill" style="font-size: 2rem;"></i>
+                    <h6 class="card-title mt-2">Enrollments</h6>
+                    <h2 class="mb-0">@Model.ActiveEnrollments</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Enrollment Trends Chart -->
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-graph-up-arrow"></i> Enrollment Trends (Last 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.EnrollmentTrends.Any())
+                    {
+                        <canvas id="enrollmentTrendChart" style="max-height: 300px;"></canvas>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-5">No enrollment data available for the last 30 days.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Status -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> Applications</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="border-bottom pb-2">Student Applications</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span><i class="bi bi-hourglass-split text-warning"></i> Pending</span>
+                        <strong>@Model.PendingStudentApplications</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span><i class="bi bi-check-circle text-success"></i> Approved</span>
+                        <strong>@Model.ApprovedStudentApplications</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span><i class="bi bi-x-circle text-danger"></i> Denied</span>
+                        <strong>@Model.DeniedStudentApplications</strong>
+                    </div>
+
+                    <h6 class="border-bottom pb-2 mt-3">Instructor Applications</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span><i class="bi bi-hourglass-split text-warning"></i> Pending</span>
+                        <strong>@Model.PendingInstructorApplications</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span><i class="bi bi-check-circle text-success"></i> Approved</span>
+                        <strong>@Model.ApprovedInstructorApplications</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Service Enrollment Breakdown -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-pie-chart-fill"></i> Service Enrollment Breakdown</h5>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    @if (Model.ServiceEnrollments.Any())
+                    {
+                        @foreach (var service in Model.ServiceEnrollments)
+                        {
+                            <div class="mb-3 pb-2 border-bottom">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong class="text-truncate" style="max-width: 60%;" title="@service.ServiceName">
+                                        @service.ServiceName
+                                    </strong>
+                                    <span class="badge bg-primary">@service.EnrollmentCount students</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar3"></i> @service.SectionCount sections
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-bar-chart"></i> Avg: @service.AveragePerSection.ToString("F1") per section
+                                    </small>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-3">No service enrollment data available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Conduct & Certificates Summary -->
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-shield-exclamation"></i> Conduct</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <h2 class="display-4 mb-0">@Model.TotalStrikes</h2>
+                        <p class="text-muted">Total Strikes</p>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span><i class="bi bi-exclamation-triangle text-danger"></i> Active</span>
+                        <strong>@Model.ActiveStrikes</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span><i class="bi bi-check-circle text-success"></i> Resolved</span>
+                        <strong>@Model.ResolvedStrikes</strong>
+                    </div>
+                    <hr />
+                    <a asp-page="/Strikes/Index" class="btn btn-sm btn-outline-danger w-100">
+                        <i class="bi bi-list-ul"></i> View All Strikes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificates Summary -->
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-award-fill"></i> Certificates</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <h2 class="display-4 mb-0">@Model.TotalCertificates</h2>
+                        <p class="text-muted">Issued</p>
+                    </div>
+                    <div class="text-center">
+                        <i class="bi bi-award" style="font-size: 4rem; color: gold;"></i>
+                    </div>
+                    <hr />
+                    <a asp-page="/Managers/Certificates/Index" class="btn btn-sm btn-outline-warning w-100">
+                        <i class="bi bi-list-ul"></i> View Certificates
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent System Activity</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentActivities.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var activity in Model.RecentActivities)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge @activity.BadgeClass me-3">
+                                                <i class="bi bi-@activity.Icon"></i>
+                                            </span>
+                                            <div>
+                                                <h6 class="mb-1">@activity.Type</h6>
+                                                <p class="mb-0 text-muted small">@activity.Description</p>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            @activity.Timestamp.ToString("MMM dd, yyyy hh:mm tt")
+                                        </small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-3">No recent activity to display.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@if (Model.EnrollmentTrends.Any())
+{
+<script>
+const ctx = document.getElementById('enrollmentTrendChart').getContext('2d');
+const enrollmentChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [@Html.Raw(string.Join(",", Model.EnrollmentTrends.Select(t => $"'{t.Date:MM/dd}'")))],
+        datasets: [{
+            label: 'Daily Enrollments',
+            data: [@string.Join(",", Model.EnrollmentTrends.Select(t => t.Count))],
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2.5,
+        plugins: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: 'Student Enrollment Activity',
+                font: {
+                    size: 16,
+                    weight: 'bold'
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+</script>
+}
+}

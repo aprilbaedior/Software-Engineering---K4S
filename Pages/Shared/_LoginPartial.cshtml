@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CS395SI_Spring2023_Group1.Data
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject CS395SI_Spring2023_Group1Context _loginContext
+
+@{
+    string displayName = UserManager.GetUserName(User) ?? "";
+    if (SignInManager.IsSignedIn(User))
+    {
+        var email = UserManager.GetUserName(User);
+        var profile = _loginContext.Spring2023_Group1_Profile_Sys
+            .FirstOrDefault(p => p.Email == email);
+        if (profile != null && !string.IsNullOrEmpty(profile.Name))
+            displayName = profile.Name;
+    }
+}
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <a id="manage" class="nav-link text-dark" href="/Identity/Account/Manage" title="Manage">Hello @displayName!</a>
+    </li>
+    <li class="nav-item">
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+        </form>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="register" href="/Identity/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" id="login" href="/Identity/Account/Login">Login</a>
+    </li>
+}
+</ul>

@@ -1,0 +1,149 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages_Strikes.CreateModel
+@using CS395SI_Spring2023_K4S.Model;
+
+@{
+    ViewData["Title"] = "File a Strike";
+}
+
+<div class="container mt-4">
+    <h1><i class="fas fa-exclamation-triangle me-2 text-warning"></i>File a Strike</h1>
+    <p class="text-muted">Report a behavioral or attendance violation for a student in your section</p>
+
+    <hr />
+
+    @* Show any errors from ModelState *@
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <h5>Errors:</h5>
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" id="strikeForm" onsubmit="return confirmSubmit();">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Spring2026_Group1_Strike.StudentID" class="control-label">
+                                <span class="text-danger">*</span> Select Student
+                            </label>
+                            <select asp-for="Spring2026_Group1_Strike.StudentID" class="form-select" required>
+                                <option value="">-- Select Student --</option>
+                                @foreach (var s in Model.Students)
+                                {
+                                    <option value="@s.StudentID">@s.DisplayText</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Spring2026_Group1_Strike.StudentID" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                @if (!Model.Students.Any())
+                                {
+                                    <span class="text-warning">
+                                        <i class="fas fa-info-circle"></i> No students found in your sections.
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>Only students enrolled in your sections are shown (@Model.Students.Count students available).</span>
+                                }
+                            </small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Spring2026_Group1_Strike.Reason" class="control-label">
+                                <span class="text-danger">*</span> Reason for Strike
+                            </label>
+                            <textarea asp-for="Spring2026_Group1_Strike.Reason" 
+                                      class="form-control" 
+                                      rows="4"
+                                      required
+                                      placeholder="Provide a detailed explanation for filing this strike..."></textarea>
+                            <span asp-validation-for="Spring2026_Group1_Strike.Reason" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                Be specific and professional. This will be reviewed by program managers.
+                            </small>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Note:</strong> This strike will be sent to program managers for review. 
+                            The student will be notified once the strike is approved or denied.
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-warning" id="submitBtn">
+                                <i class="fas fa-exclamation-triangle me-2"></i> Submit Strike
+                            </button>
+                            <a asp-page="Index" class="btn btn-secondary ms-2">
+                                <i class="fas fa-times me-2"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Strike Guidelines</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text small">
+                        <strong>When to file a strike:</strong>
+                    </p>
+                    <ul class="small">
+                        <li>Repeated unexcused absences</li>
+                        <li>Disruptive behavior</li>
+                        <li>Failure to follow program rules</li>
+                        <li>Disrespect to instructors or peers</li>
+                    </ul>
+                    <hr>
+                    <p class="card-text small mb-0">
+                        <strong>Impact:</strong> Students with more than 3 approved strikes 
+                        may become ineligible for program completion certificates.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function confirmSubmit() {
+            const studentId = document.querySelector('[name="Spring2026_Group1_Strike.StudentID"]').value;
+            const reason = document.querySelector('[name="Spring2026_Group1_Strike.Reason"]').value;
+            
+            if (!studentId || studentId === '') {
+                alert('Please select a student');
+                return false;
+            }
+            
+            if (!reason || reason.trim() === '') {
+                alert('Please provide a reason');
+                return false;
+            }
+            
+            // Disable button to prevent double submission
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Submitting...';
+            
+            return true;
+        }
+    </script>
+}
+

@@ -1,0 +1,223 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages_Strikes.IndexModel
+@using CS395SI_Spring2023_K4S.Model
+@using CS395SI_Spring2023_Group1.Constants
+@{
+    ViewData["Title"] = "Strikes";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+                {
+                    <text>Review Student Strikes</text>
+                }
+                else if (User.IsInRole("Student"))
+                {
+                    <text>My Strikes</text>
+                }
+                else
+                {
+                    <text>Strikes I've Filed</text>
+                }
+            </h1>
+            <p class="text-muted mt-1">
+                @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+                {
+                    <text>Approve or deny strikes filed by instructors.</text>
+                }
+                else if (User.IsInRole("Student"))
+                {
+                    <text>Strikes that have been filed against you.</text>
+                }
+                else
+                {
+                    <text>Strikes you have filed against students.</text>
+                }
+            </p>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "Pending" ? "active" : "")"
+               asp-page="./Index" asp-route-tab="Pending">
+                Pending
+                <span class="badge ms-1" style="background-color: #C5D2F8; color: #4F0C28;">@Model.PendingCount</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "Approved" ? "active" : "")"
+               asp-page="./Index" asp-route-tab="Approved">
+                Approved
+                <span class="badge ms-1" style="background-color: #dc3545; color: white;">@Model.ApprovedCount</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "Denied" ? "active" : "")"
+               asp-page="./Index" asp-route-tab="Denied">
+                Denied
+                <span class="badge ms-1" style="background-color: #28a745; color: white;">@Model.DeniedCount</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Manager Notes Modal -->
+    @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+    {
+    <div class="modal fade" id="reviewModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #4F0C28; color: white;">
+                    <h5 class="modal-title"><i class="bi bi-clipboard-check me-2"></i> Review Strike</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" id="reviewForm">
+                    <div class="modal-body">
+                        <input type="hidden" name="strikeId" id="reviewStrikeId" />
+                        <input type="hidden" name="action" id="reviewAction" />
+                        <div class="form-group">
+                            <label class="form-label">Manager Notes (Optional)</label>
+                            <textarea name="managerNotes" class="form-control" rows="3"
+                                      placeholder="Add notes for this decision..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" id="reviewSubmitBtn" class="btn">Submit Decision</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Strikes Table -->
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-list-check me-2"></i> @Model.ActiveTab Strikes
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Strikes.Any())
+            {
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Student</th>
+                            <th>Filed By</th>
+                            <th>Service / Section</th>
+                            <th>Reason</th>
+                            <th>Filed Date</th>
+                            <th>Status</th>
+                            @if (Model.ActiveTab != "Pending")
+                                {
+                            <th>Review Date</th>
+                            <th>Manager Notes</th>
+                                }
+                            @if ((User.IsInRole("Manager") || User.IsInRole("Admin")) && Model.ActiveTab == "Pending")
+                                {
+                            <th>Actions</th>
+                                }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var strike in Model.Strikes)
+                            {
+                        <tr>
+                            <td>
+                                <span class="badge" style="background-color:#4F0C28;color:white;">
+                                    #@strike.StrikeID
+                                </span>
+                            </td>
+                            <td>
+                                <strong>@strike.StudentName</strong>
+                                <br /><small class="text-muted">@strike.StudentEmail</small>
+                            </td>
+                            <td>@strike.FiledBy</td>
+                            <td>
+                                @(strike.ServiceID ?? "�")
+                                @if (strike.SectionID.HasValue)
+                                        {
+                                <br /><small class="text-muted">Section #@strike.SectionID</small>
+                                        }
+                            </td>
+                            <td>
+                                <span title="@strike.Reason" style="display:inline-block;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    @strike.Reason
+                                </span>
+                            </td>
+                            <td>@strike.FiledDate.ToString("MM/dd/yyyy")</td>
+                            <td>
+                                <span class="status-badge @strike.ReviewStatus.ToLower()">@strike.ReviewStatus</span>
+                            </td>
+                            @if (Model.ActiveTab != "Pending")
+                                    {
+                            <td>@(strike.ReviewDate.HasValue ? strike.ReviewDate.Value.ToString("MM/dd/yyyy") : "�")</td>
+                            <td>
+                                <span title="@strike.ManagerNotes" style="display:inline-block;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    @(strike.ManagerNotes ?? "�")
+                                </span>
+                            </td>
+                                    }
+                            @if ((User.IsInRole("Manager") || User.IsInRole("Admin")) && Model.ActiveTab == "Pending")
+                                    {
+                            <td>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn"
+                                            style="background-color:#dc3545;color:white;width:35px;height:35px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;"
+                                            title="Approve Strike"
+                                            data-strike-id="@strike.StrikeID"
+                                            data-action="Approve"
+                                            data-btn-style="background-color:#dc3545;color:white;"
+                                            data-btn-label="Approve Strike"
+                                            onclick="openReviewModal(this)">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <button type="button" class="btn"
+                                            style="background-color:#28a745;color:white;width:35px;height:35px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;"
+                                            title="Deny Strike"
+                                            data-strike-id="@strike.StrikeID"
+                                            data-action="Deny"
+                                            data-btn-style="background-color:#28a745;color:white;"
+                                            data-btn-label="Deny Strike"
+                                            onclick="openReviewModal(this)">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                            </td>
+                                    }
+                        </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+            }
+            else
+            {
+            <div class="text-center py-5">
+                <i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #ccc;"></i>
+                <p class="text-muted mt-3">No @Model.ActiveTab.ToLower() strikes.</p>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>function openReviewModal(btn) {
+        document.getElementById('reviewStrikeId').value = btn.dataset.strikeId;
+        document.getElementById('reviewAction').value = btn.dataset.action;
+
+        const submitBtn = document.getElementById('reviewSubmitBtn');
+        submitBtn.setAttribute('style', btn.dataset.btnStyle);
+        submitBtn.textContent = btn.dataset.btnLabel;
+
+        const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+        modal.show();
+    }</script>

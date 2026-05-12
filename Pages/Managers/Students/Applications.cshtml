@@ -1,0 +1,130 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Manager.Students.ApplicationsModel
+@{
+    ViewData["Title"] = "Student Applications";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-file-text me-2"></i> Student Applications
+            </h1>
+            <p class="text-muted mt-1">Review and manage student program applications.</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "Pending" ? "active" : "")"
+               asp-page="./Applications" asp-route-tab="Pending">
+                Pending
+                <span class="badge ms-1" style="background-color: #C5D2F8; color: #4F0C28;">@Model.PendingCount</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "Approved" ? "active" : "")"
+               asp-page="./Applications" asp-route-tab="Approved">
+                Approved
+                <span class="badge ms-1" style="background-color: #28a745; color: white;">@Model.ApprovedCount</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "Denied" ? "active" : "")"
+               asp-page="./Applications" asp-route-tab="Denied">
+                Denied
+                <span class="badge ms-1" style="background-color: #dc3545; color: white;">@Model.DeniedCount</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Applications Table -->
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-list-check me-2"></i>
+            @Model.ActiveTab Applications
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Applications.Any())
+            {
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Date of Birth</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var app in Model.Applications)
+                            {
+                        <tr>
+                            <td><strong>@app.Name</strong></td>
+                            <td>@app.Email</td>
+                            <td>@(app.PhoneNum ?? "�")</td>
+                            <td>@(app.DateOfBirth.HasValue ? app.DateOfBirth.Value.ToString("MM/dd/yyyy") : "�")</td>
+                            <td>
+                                <span class="status-badge @app.ApplicationStatus.ToLower()">
+                                    @app.ApplicationStatus
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-page="/Scheduling/Registration/Details"
+                                       asp-route-id="@app.Email"
+                                       class="btn details-btn" title="View Application">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    @if (app.ApplicationStatus == "Pending")
+                                            {
+                                    <form method="post" asp-page-handler="Approve" style="display: inline;">
+                                        <input type="hidden" name="email" value="@app.Email" />
+                                        <button type="submit" class="btn"
+                                                style="background-color:#28a745;color:white;width:35px;height:35px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;"
+                                                title="Approve"
+                                                onclick="return confirm('Approve @app.Name\'s application?')">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-page-handler="Deny" style="display: inline;">
+                                        <input type="hidden" name="email" value="@app.Email" />
+                                        <button type="submit" class="btn delete-btn"
+                                                style="width:35px;height:35px;border-radius:50%;"
+                                                title="Deny"
+                                                onclick="return confirm('Deny @app.Name\'s application?')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </form>
+                                            }
+                                </div>
+                            </td>
+                        </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+            }
+            else
+            {
+            <div class="text-center py-5">
+                <i class="bi bi-file-earmark-check" style="font-size: 3rem; color: #ccc;"></i>
+                <p class="text-muted mt-3">No @Model.ActiveTab.ToLower() applications.</p>
+            </div>
+            }
+        </div>
+    </div>
+</div>

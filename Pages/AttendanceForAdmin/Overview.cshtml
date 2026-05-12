@@ -1,0 +1,426 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.AttendanceForAdmin.OverviewModel
+@{
+    ViewData["Title"] = "Attendance Overview";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-clipboard-data"></i> Attendance Overview
+            </h1>
+            <p class="lead text-muted">System-wide attendance analytics and reporting</p>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filters</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" name="StartDate" 
+                           value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDate" name="EndDate" 
+                           value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-2">
+                    <label for="serviceFilter" class="form-label">Service</label>
+                    <select class="form-select" id="serviceFilter" name="ServiceFilter">
+                        <option value="">All Services</option>
+                        @foreach (var service in Model.AvailableServices)
+                        {
+                            <option value="@service.ServiceID" selected="@(Model.ServiceFilter == service.ServiceID)">
+                                @service.ServiceName
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="sectionFilter" class="form-label">Section</label>
+                    <select class="form-select" id="sectionFilter" name="SectionFilter">
+                        <option value="">All Sections</option>
+                        @foreach (var sec in Model.AvailableSections)
+                        {
+                            <option value="@sec.SectionID" selected="@(Model.SectionFilter == sec.SectionID)">
+                                Section @sec.SectionID
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Apply
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Overall Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total Records</h6>
+                    <h2 class="mb-0">@Model.TotalAttendanceRecords</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Present</h6>
+                    <h2 class="mb-0">@Model.TotalPresent</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-warning">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Late</h6>
+                    <h2 class="mb-0">@Model.TotalLate</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-danger">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Absent</h6>
+                    <h2 class="mb-0">@Model.TotalAbsent</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Excused</h6>
+                    <h2 class="mb-0">@Model.TotalExcused</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-white @(Model.OverallAttendanceRate >= 85 ? "bg-success" : Model.OverallAttendanceRate >= 75 ? "bg-warning" : "bg-danger")">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Overall Rate</h6>
+                    <h2 class="mb-0">@Model.OverallAttendanceRate.ToString("F1")%</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Attendance Trends Chart -->
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Attendance Trends</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.AttendanceTrends.Any())
+                    {
+                        <canvas id="attendanceTrendChart" style="max-height: 350px;"></canvas>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-5">No attendance data available for the selected period.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Performance -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Service Performance</h5>
+                </div>
+                <div class="card-body" style="max-height: 450px; overflow-y: auto;">
+                    @if (Model.ServiceStats.Any())
+                    {
+                        @foreach (var service in Model.ServiceStats)
+                        {
+                            <div class="mb-3 pb-2 border-bottom">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <strong class="text-truncate" style="max-width: 70%;" title="@service.ServiceName">
+                                        @service.ServiceName
+                                    </strong>
+                                    <span class="badge @(service.AttendanceRate >= 85 ? "bg-success" : service.AttendanceRate >= 75 ? "bg-warning text-dark" : "bg-danger")">
+                                        @service.AttendanceRate.ToString("F1")%
+                                    </span>
+                                </div>
+                                <div class="progress mb-2" style="height: 24px;">
+                                    <div class="progress-bar @(service.AttendanceRate >= 85 ? "bg-success" : service.AttendanceRate >= 75 ? "bg-warning" : "bg-danger")" 
+                                         role="progressbar" 
+                                         style="width: @service.AttendanceRate%"
+                                         aria-valuenow="@service.AttendanceRate" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">
+                                        <span class="badge bg-light text-dark border me-1">@service.TotalSessions total</span>
+                                    </small>
+                                    <small class="text-muted">
+                                        <span class="text-success fw-bold">P: @service.PresentCount</span> |
+                                        <span class="text-warning fw-bold">L: @service.LateCount</span> |
+                                        <span class="text-danger fw-bold">A: @service.AbsentCount</span>
+                                    </small>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-3">No service data available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Statistics Table -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-table"></i> Section Statistics</h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.SectionStats.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Instructor</th>
+                                        <th class="text-center">Total Records</th>
+                                        <th class="text-center">Present</th>
+                                        <th class="text-center">Absent</th>
+                                        <th style="min-width: 180px;">Attendance Rate</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.SectionStats)
+                                    {
+                                        <tr>
+                                            <td><strong>@item.SectionName</strong></td>
+                                            <td>
+                                                <span class="text-truncate d-inline-block" style="max-width: 200px;" title="@item.InstructorEmail">
+                                                    @item.InstructorEmail
+                                                </span>
+                                            </td>
+                                            <td class="text-center">@item.TotalSessions</td>
+                                            <td class="text-center">
+                                                <span class="badge bg-success">@item.PresentCount</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-danger">@item.AbsentCount</span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 100px;">
+                                                        <div class="progress-bar @(item.AttendanceRate >= 85 ? "bg-success" : item.AttendanceRate >= 75 ? "bg-warning" : "bg-danger")" 
+                                                             role="progressbar" 
+                                                             style="width: @item.AttendanceRate%"
+                                                             aria-valuenow="@item.AttendanceRate" 
+                                                             aria-valuemin="0" 
+                                                             aria-valuemax="100">
+                                                        </div>
+                                                    </div>
+                                                    <span class="fw-bold" style="min-width: 45px;">
+                                                        @item.AttendanceRate.ToString("F1")%
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <a asp-page="/AttendanceForAdmin/Index" asp-route-sectionId="@item.SectionID" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-5">No data available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Students with Poor Attendance -->
+    @if (Model.StudentsWithPoorAttendance.Any())
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle-fill"></i> 
+                            Students Requiring Attention (Less than 75% Attendance)
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-danger">
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Email</th>
+                                        <th class="text-center">Total</th>
+                                        <th class="text-center">Present</th>
+                                        <th class="text-center">Late</th>
+                                        <th class="text-center">Absent</th>
+                                        <th class="text-center">Rate</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var student in Model.StudentsWithPoorAttendance)
+                                    {
+                                        <tr class="@(student.AttendanceRate < 50 ? "table-danger" : "table-warning")">
+                                            <td>
+                                                <strong>@student.StudentName</strong>
+                                            </td>
+                                            <td>
+                                                <span class="text-truncate d-inline-block" style="max-width: 250px;" title="@student.StudentEmail">
+                                                    @student.StudentEmail
+                                                </span>
+                                            </td>
+                                            <td class="text-center">@student.TotalSessions</td>
+                                            <td class="text-center">
+                                                <span class="badge bg-success">@student.PresentCount</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-warning text-dark">@student.LateCount</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-danger">@student.AbsentCount</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <strong class="text-danger fs-6">@student.AttendanceRate.ToString("F1")%</strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="mailto:@student.StudentEmail" class="btn btn-sm btn-outline-primary" title="Send Email">
+                                                    <i class="bi bi-envelope"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@if (Model.AttendanceTrends.Any())
+{
+<script>
+const ctx = document.getElementById('attendanceTrendChart').getContext('2d');
+const attendanceTrendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [@Html.Raw(string.Join(",", Model.AttendanceTrends.Select(t => $"'{t.Date:MM/dd}'")))],
+        datasets: [{
+            label: 'Attendance Rate %',
+            data: [@string.Join(",", Model.AttendanceTrends.Select(t => t.AttendanceRate.ToString("F2")))],
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.4,
+            fill: true,
+            borderWidth: 2
+        }, {
+            label: 'Present Count',
+            data: [@string.Join(",", Model.AttendanceTrends.Select(t => t.PresentCount))],
+            borderColor: 'rgb(40, 167, 69)',
+            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+            tension: 0.4,
+            borderWidth: 2
+        }, {
+            label: 'Absent Count',
+            data: [@string.Join(",", Model.AttendanceTrends.Select(t => t.AbsentCount))],
+            borderColor: 'rgb(220, 53, 69)',
+            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+            tension: 0.4,
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2.5,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    padding: 15,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            title: {
+                display: true,
+                text: 'Daily Attendance Trends',
+                font: {
+                    size: 16,
+                    weight: 'bold'
+                },
+                padding: 20
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    font: {
+                        size: 11
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 10
+                    },
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }
+        },
+        interaction: {
+            mode: 'nearest',
+            axis: 'x',
+            intersect: false
+        }
+    }
+});
+</script>
+}
+}

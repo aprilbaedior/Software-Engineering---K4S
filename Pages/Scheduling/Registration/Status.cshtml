@@ -1,0 +1,154 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Registration.StatusModel
+@{
+    ViewData["Title"] = "Application Status";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="mb-4">
+                <h1 style="color: #4F0C28;">
+                    <i class="bi bi-clipboard-check me-2"></i>My Application Status
+                </h1>
+                <p class="text-muted">Check the status of your role applications</p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+                </div>
+            }
+
+            @if (Model.HasAnyApplication)
+            {
+                <!-- Student Application Status -->
+                @if (Model.StudentProfile != null)
+                {
+                    <div class="card shadow mb-4" style="border-left: 4px solid #4F0C28;">
+                        <div class="card-header" style="background-color: #4F0C28; color: white;">
+                            <h4 class="mb-0">
+                                <i class="bi bi-person-circle me-2"></i>Student Application
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert @(Model.StudentProfile.ApplicationStatus == "Approved" ? "alert-success" : Model.StudentProfile.ApplicationStatus == "Rejected" ? "alert-danger" : "alert-warning")">
+                                <h5>Status: <strong>@Model.StudentProfile.ApplicationStatus</strong></h5>
+
+                                @if (Model.StudentProfile.ApplicationStatus == "Pending")
+                                {
+                                    <p class="mb-0">Your application is under review. You'll be notified once a decision is made.</p>
+                                }
+                                else if (Model.StudentProfile.ApplicationStatus == "Approved")
+                                {
+                                    <p class="mb-0">✅ Approved! You can now browse and enroll in K4S services.</p>
+                                }
+                                else if (Model.StudentProfile.ApplicationStatus == "Rejected")
+                                {
+                                    <p class="mb-0">Your application was not approved. Please contact us for more information.</p>
+                                }
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Name:</strong> @Model.StudentProfile.Name</p>
+                                    <p><strong>Email:</strong> @Model.StudentProfile.Email</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Phone:</strong> @(Model.StudentProfile.PhoneNum ?? "—")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Employee Application Status (Instructor/Manager/Admin) -->
+                @if (Model.EmployeeApplication != null)
+                {
+                    <div class="card shadow mb-4" style="border-left: 4px solid #C5D2F8;">
+                        <div class="card-header" style="background-color: #4F0C28; color: white;">
+                            <h4 class="mb-0">
+                                <i class="bi bi-person-badge me-2"></i>@Model.EmployeeApplication.DesiredPosition Application
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert @(Model.EmployeeApplication.ApplicationStatus == "Approved" ? "alert-success" : Model.EmployeeApplication.ApplicationStatus == "Denied" ? "alert-danger" : "alert-warning")">
+                                <h5>Status: <strong>@Model.EmployeeApplication.ApplicationStatus</strong></h5>
+
+                                @if (Model.EmployeeApplication.ApplicationStatus == "Pending")
+                                {
+                                    <p class="mb-0">Your @Model.EmployeeApplication.DesiredPosition application is being reviewed by management.</p>
+                                }
+                                else if (Model.EmployeeApplication.ApplicationStatus == "Approved")
+                                {
+                                    <p class="mb-0">✅ Approved! You now have @Model.EmployeeApplication.DesiredPosition access.</p>
+                                    @if (Model.EmployeeApplication.ReviewDate.HasValue)
+                                    {
+                                        <small class="text-muted">Approved on @Model.EmployeeApplication.ReviewDate.Value.ToString("MM/dd/yyyy")</small>
+                                    }
+                                }
+                                else if (Model.EmployeeApplication.ApplicationStatus == "Denied")
+                                {
+                                    <p class="mb-0">Your @Model.EmployeeApplication.DesiredPosition application was not approved.</p>
+                                    @if (Model.EmployeeApplication.ReviewDate.HasValue)
+                                    {
+                                        <small class="text-muted">Reviewed on @Model.EmployeeApplication.ReviewDate.Value.ToString("MM/dd/yyyy")</small>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.EmployeeApplication.ReviewNotes))
+                                    {
+                                        <p class="mt-2 mb-0"><strong>Review Notes:</strong> @Model.EmployeeApplication.ReviewNotes</p>
+                                    }
+                                }
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Name:</strong> @Model.EmployeeApplication.FullName</p>
+                                    <p><strong>Email:</strong> @Model.EmployeeApplication.Email</p>
+                                    <p><strong>Phone:</strong> @Model.EmployeeApplication.PhoneNumber</p>
+                                    @if (!string.IsNullOrEmpty(Model.EmployeeApplication.Specialties))
+                                    {
+                                        <p><strong>Specialties:</strong> @Model.EmployeeApplication.Specialties</p>
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Position:</strong> @Model.EmployeeApplication.DesiredPosition</p>
+                                    <p><strong>Applied:</strong> @Model.EmployeeApplication.ApplicationDate.ToString("MM/dd/yyyy")</p>
+                                    @if (!string.IsNullOrEmpty(Model.EmployeeApplication.ReviewedBy))
+                                    {
+                                        <p><strong>Reviewed By:</strong> @Model.EmployeeApplication.ReviewedBy</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="text-center mt-4">
+                    <a asp-page="/Index" class="btn btn-primary" style="background-color: #4F0C28; border: none;">
+                        <i class="bi bi-house me-1"></i>Return to Home
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="card shadow">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                        <h4 class="mt-3">No Applications Found</h4>
+                        <p class="text-muted">You haven't submitted any role applications yet.</p>
+                        <div class="mt-4">
+                            <a asp-page="/Scheduling/Registration/Create" class="btn btn-primary me-2" style="background-color: #4F0C28; border: none;">
+                                <i class="bi bi-person-circle me-1"></i>Apply as Student
+                            </a>
+                            <a asp-page="/Registration/FacultyApplication" class="btn btn-outline-primary" style="border-color: #4F0C28; color: #4F0C28;">
+                                <i class="bi bi-person-badge me-1"></i>Apply as Faculty
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

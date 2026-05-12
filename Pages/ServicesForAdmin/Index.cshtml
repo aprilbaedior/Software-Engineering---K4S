@@ -1,0 +1,96 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.ServicesForAdmin.IndexModel
+@{
+    ViewData["Title"] = "Services";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-briefcase me-2"></i> Services
+            </h1>
+            <p class="text-muted mt-1">Manage all K4S program services.</p>
+        </div>
+        <a asp-page="./Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Create New Service
+        </a>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-list-ul me-2"></i> All Services
+            <span class="badge ms-1" style="background-color: #C5D2F8; color: #4F0C28;">@Model.Spring2023_Group1_Services.Count</span>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Spring2023_Group1_Services.Any())
+            {
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Service ID</th>
+                            <th>Frequency</th>
+                            <th>Hours</th>
+                            <th>Description</th>
+                            <th>Sections</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Spring2023_Group1_Services)
+                        {
+                        <tr>
+                            <td><strong>@(item.ServiceName ?? "—")</strong></td>
+                            <td><span class="badge" style="background-color:#4F0C28;color:white;">@item.ServiceID</span></td>
+                            <td>@(item.ServiceFrequency ?? "—")</td>
+                            <td>@item.ServiceHours hrs</td>
+                            <td>
+                                <span title="@item.ServiceDescription">
+                                    @(item.ServiceDescription != null && item.ServiceDescription.Length > 60
+                                        ? item.ServiceDescription.Substring(0, 60) + "…"
+                                        : item.ServiceDescription ?? "—")
+                                </span>
+                            </td>
+                            <td>
+                                @{
+                                    var count = Model.SectionCounts.TryGetValue(item.ServiceID, out var c) ? c : 0;
+                                }
+                                <span class="badge" style="background-color: @(count > 0 ? "#28a745" : "#6c757d"); color: white; font-size: 0.85rem; padding: 0.35em 0.65em;">
+                                    @count
+                                </span>
+                            </td>
+                            <td class="action-buttons">
+                                <a asp-page="./Edit" asp-route-id="@item.ServiceID" class="btn edit-btn" title="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                <a asp-page="./Details" asp-route-id="@item.ServiceID" class="btn details-btn" title="View Details">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                                <a asp-page="/Sections/Index" asp-route-serviceID="@item.ServiceID" class="btn sections-btn" title="View Sections">
+                                    <i class="fas fa-folder-open"></i>
+                                </a>
+                                <a asp-page="./Delete" asp-route-id="@item.ServiceID" class="btn delete-btn" title="Delete"
+                                   onclick="return confirm('Are you sure you want to delete this service?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            }
+            else
+            {
+            <div class="text-center py-5">
+                <i class="bi bi-briefcase" style="font-size: 3rem; color: #ccc;"></i>
+                <p class="text-muted mt-3">No services have been created yet.</p>
+                <a asp-page="./Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i> Create First Service
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+</div>

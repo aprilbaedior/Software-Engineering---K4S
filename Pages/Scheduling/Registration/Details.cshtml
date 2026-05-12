@@ -1,0 +1,79 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Registration.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Student Application Details</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Update Application Status</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <input type="hidden" name="StudentId" value="@Model.Spring2023_Group1_Profile_Sys.Email" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Current Status: <strong>@Model.Spring2023_Group1_Profile_Sys.ApplicationStatus</strong></label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">New Status:</label>
+                        <select name="ApplicationStatus" class="form-select">
+                            <option value="Pending">Pending</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Denied">Denied</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Spring2023_Group1_Profile_Sys.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Spring2023_Group1_Profile_Sys.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Spring2023_Group1_Profile_Sys.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Spring2023_Group1_Profile_Sys.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Spring2023_Group1_Profile_Sys.PhoneNum)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Spring2023_Group1_Profile_Sys.PhoneNum)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Spring2023_Group1_Profile_Sys.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Spring2023_Group1_Profile_Sys.Address)
+        </dd>
+        <!-- Additional fields -->
+        <dt class="col-sm-2">
+            Application Status
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Spring2023_Group1_Profile_Sys.ApplicationStatus)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>

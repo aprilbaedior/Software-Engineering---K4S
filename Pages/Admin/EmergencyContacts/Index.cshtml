@@ -1,0 +1,324 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Admin.EmergencyContacts.IndexModel
+@{
+    ViewData["Title"] = "All Emergency Contacts";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-telephone-fill text-danger"></i> All Emergency Contacts
+            </h1>
+            <p class="lead text-muted">System-wide view of all student emergency contact information</p>
+        </div>
+    </div>
+
+    @if (TempData["Info"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="bi bi-info-circle-fill"></i> @TempData["Info"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people"></i> Total Students</h5>
+                    <h2 class="mb-0">@Model.TotalStudents</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-check-circle"></i> Complete (3 Contacts)</h5>
+                    <h2 class="mb-0">@Model.StudentsWithAllContacts</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-exclamation-circle"></i> Incomplete</h5>
+                    <h2 class="mb-0">@Model.StudentsWithIncompleteContacts</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-x-circle"></i> No Contacts</h5>
+                    <h2 class="mb-0">@Model.StudentsWithNoContacts</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-5">
+                    <label for="searchTerm" class="form-label">Search by Name, Email, or Phone</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="searchTerm" 
+                               name="SearchTerm" 
+                               value="@Model.SearchTerm" 
+                               placeholder="Enter student name, email, or phone...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="filterBy" class="form-label">Filter by Status</label>
+                    <select class="form-select" id="filterBy" name="FilterBy">
+                        <option value="All" selected="@(string.IsNullOrEmpty(Model.FilterBy) || Model.FilterBy == "All")">All Students</option>
+                        <option value="HasContacts" selected="@(Model.FilterBy == "HasContacts")">Complete (3 Contacts)</option>
+                        <option value="Incomplete" selected="@(Model.FilterBy == "Incomplete")">Incomplete/Missing</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-funnel"></i> Apply Filters
+                    </button>
+                    <a asp-page="/Admin/EmergencyContacts/Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Summary -->
+    @if (Model.TotalRecords > 0)
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Showing @Model.StudentContacts.Count of @Model.TotalRecords students
+        </div>
+    }
+
+    <!-- Emergency Contacts List -->
+    @if (Model.StudentContacts.Any())
+    {
+        <div class="row">
+            @foreach (var student in Model.StudentContacts)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 @(student.EmergencyContacts.Count < 3 ? "border-warning" : student.EmergencyContacts.Count == 0 ? "border-danger" : "")">
+                        <div class="card-header bg-dark text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-person-circle"></i> @student.StudentName
+                                    @if (student.IsMinor)
+                                    {
+                                        <span class="badge bg-info ms-2">Minor</span>
+                                    }
+                                </h5>
+                                <span class="badge @(student.EmergencyContacts.Count >= 3 ? "bg-success" : student.EmergencyContacts.Count > 0 ? "bg-warning" : "bg-danger")">
+                                    @student.EmergencyContacts.Count / 3 Contacts
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Student Information -->
+                            <div class="mb-3 pb-3 border-bottom">
+                                <h6 class="text-muted"><i class="bi bi-info-circle"></i> Student Information</h6>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">Email:</small><br>
+                                        <strong>@student.StudentEmail</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Phone:</small><br>
+                                        <strong>@student.StudentPhone</strong>
+                                    </div>
+                                </div>
+                                @if (student.DateOfBirth.HasValue)
+                                {
+                                    <div class="mt-2">
+                                        <small class="text-muted">DOB:</small>
+                                        <strong>@student.DateOfBirth.Value.ToString("MM/dd/yyyy")</strong>
+                                        <span class="text-muted">
+                                            (Age: @((DateTime.Now - student.DateOfBirth.Value).Days / 365))
+                                        </span>
+                                    </div>
+                                }
+                                <div class="mt-2">
+                                    <small class="text-muted">Address:</small><br>
+                                    <span>@student.StudentAddress</span>
+                                </div>
+                            </div>
+
+                            <!-- Guardian Information (if minor) -->
+                            @if (student.IsMinor && !string.IsNullOrEmpty(student.GuardianName))
+                            {
+                                <div class="mb-3 pb-3 border-bottom bg-light p-2 rounded">
+                                    <h6 class="text-primary"><i class="bi bi-person-badge"></i> Parent/Guardian</h6>
+                                    <strong>@student.GuardianName</strong>
+                                    <div class="mt-1">
+                                        @if (!string.IsNullOrEmpty(student.GuardianHomePhone))
+                                        {
+                                            <div>
+                                                <small class="text-muted">Home:</small> 
+                                                <a href="tel:@student.GuardianHomePhone">@student.GuardianHomePhone</a>
+                                            </div>
+                                        }
+                                        @if (!string.IsNullOrEmpty(student.GuardianMobilePhone))
+                                        {
+                                            <div>
+                                                <small class="text-muted">Mobile:</small> 
+                                                <a href="tel:@student.GuardianMobilePhone">@student.GuardianMobilePhone</a>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- Emergency Contacts -->
+                            @if (student.EmergencyContacts.Any())
+                            {
+                                <h6 class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Emergency Contacts</h6>
+                                @foreach (var contact in student.EmergencyContacts)
+                                {
+                                    <div class="card mb-2 @(contact.Priority == "Primary" ? "border-danger" : contact.Priority == "Secondary" ? "border-warning" : "border-info")">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <span class="badge @(contact.Priority == "Primary" ? "bg-danger" : contact.Priority == "Secondary" ? "bg-warning" : "bg-info") mb-1">
+                                                        @contact.Priority
+                                                    </span>
+                                                    <h6 class="mb-0">@contact.Name</h6>
+                                                    <small class="text-muted">@contact.Relationship</small>
+                                                </div>
+                                                <a href="tel:@contact.PhoneNumber" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-telephone"></i> Call
+                                                </a>
+                                            </div>
+                                            <div class="mt-2">
+                                                <div><i class="bi bi-telephone"></i> @contact.PhoneNumber</div>
+                                                <div><i class="bi bi-geo-alt"></i> @contact.Address</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger mb-0">
+                                    <i class="bi bi-exclamation-triangle"></i> 
+                                    <strong>No emergency contacts on file!</strong>
+                                    <p class="mb-0 mt-2 small">This student has not provided any emergency contact information.</p>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer text-end">
+                            <a asp-page="/Admin/Users/Edit" asp-route-id="@student.StudentEmail" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i> Edit Contact Info
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination Controls -->
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Emergency contacts pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <!-- First Page -->
+                    <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                        <a class="page-link" href="?PageNumber=1&SearchTerm=@Model.SearchTerm&FilterBy=@Model.FilterBy">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </a>
+                    </li>
+
+                    <!-- Previous Page -->
+                    <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                        <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)&SearchTerm=@Model.SearchTerm&FilterBy=@Model.FilterBy">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    @{
+                        var startPage = Math.Max(1, Model.PageNumber - 2);
+                        var endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                            <a class="page-link" href="?PageNumber=@i&SearchTerm=@Model.SearchTerm&FilterBy=@Model.FilterBy">
+                                @i
+                            </a>
+                        </li>
+                    }
+
+                    <!-- Next Page -->
+                    <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" href="?PageNumber=@(Model.PageNumber + 1)&SearchTerm=@Model.SearchTerm&FilterBy=@Model.FilterBy">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+
+                    <!-- Last Page -->
+                    <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" href="?PageNumber=@Model.TotalPages&SearchTerm=@Model.SearchTerm&FilterBy=@Model.FilterBy">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="text-center text-muted mb-4">
+                <small>Page @Model.PageNumber of @Model.TotalPages</small>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                <p class="text-muted mt-3">No students found matching your criteria.</p>
+                <a asp-page="/Admin/EmergencyContacts/Index" class="btn btn-primary">
+                    <i class="bi bi-arrow-clockwise"></i> Reset Filters
+                </a>
+            </div>
+        </div>
+    }
+
+    <!-- Action Buttons -->
+    <div class="row mt-4">
+        <div class="col text-center">
+            <form method="post" asp-page-handler="Export" class="d-inline">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Export to Excel
+                </button>
+            </form>
+            <button type="button" class="btn btn-info btn-lg ms-2" onclick="window.print()">
+                <i class="bi bi-printer"></i> Print List
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        @@media print {
+            .btn, .card-footer, nav, footer, .no-print {
+                display: none !important;
+            }
+            .card {
+                page-break-inside: avoid;
+                border: 1px solid #000 !important;
+            }
+        }
+    </style>
+}

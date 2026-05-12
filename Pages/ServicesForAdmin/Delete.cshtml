@@ -1,0 +1,46 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.ServicesForAdmin.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>CAUTION - Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+   <h4>@Html.DisplayFor(model => model.Spring2023_Group1_Services.ServiceName)</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Spring2023_Group1_Services.ServiceName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Spring2023_Group1_Services.ServiceName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Spring2023_Group1_Services.ServiceFrequency)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Spring2023_Group1_Services.ServiceFrequency)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Spring2023_Group1_Services.ServiceDescription)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Spring2023_Group1_Services.ServiceDescription)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Spring2023_Group1_Services.ServiceHours)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Spring2023_Group1_Services.ServiceHours)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Spring2023_Group1_Services.ServiceID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

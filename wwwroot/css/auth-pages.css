@@ -1,0 +1,424 @@
+/* ===================================
+   K4S Authentication Pages Stylesheet
+   For: Login, Register, Logout, Forgot Password, etc.
+   =================================== */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+
+/* Reset & Base */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ===== NAVBAR ===== */
+.login-navbar {
+    background-color: #4F0C28;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-navbar .brand {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 800;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: -1px;
+    transition: color 0.3s;
+}
+
+.login-navbar .brand:hover {
+    color: #C5D2F8;
+}
+
+.login-navbar .login-link {
+    background-color: #C5D2F8;
+    color: #4F0C28;
+    padding: 0.625rem 1.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.login-navbar .login-link:hover {
+    background-color: #4F0C28;
+    color: #C5D2F8;
+    border: 2px solid #C5D2F8;
+    padding: 0.525rem 1.65rem;
+}
+
+/* ===== HERO IMAGE PLACEHOLDER ===== */
+.hero-placeholder {
+    background-color: #D3D3D3;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.hero-placeholder-content {
+    text-align: center;
+    color: #999;
+}
+
+.hero-placeholder-icon {
+    width: 150px;
+    height: 100px;
+    background-color: #B8B8B8;
+    margin: 0 auto 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-placeholder-icon i {
+    font-size: 4rem;
+    color: #888;
+}
+
+.hero-placeholder p {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* ===== MAIN CONTENT ===== */
+.login-content {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 2rem 3rem;
+    width: 100%;
+}
+
+.login-content h2 {
+    color: #4F0C28;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    font-size: 2rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.login-content h5 {
+    color: #4F0C28;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+/* ===== FORMS ===== */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #4F0C28;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-control {
+    border: 2px solid #E8E8E8;
+    border-radius: 6px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    width: 100%;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    border-color: #C5D2F8;
+    box-shadow: 0 0 0 0.2rem rgba(197, 210, 248, 0.25);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+.form-check {
+    margin: 1rem 0;
+}
+
+.form-check-input {
+    margin-right: 0.5rem;
+}
+
+.form-check-label {
+    color: #4F0C28;
+    font-weight: 500;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    background-color: #4F0C28;
+    border: none;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    width: 100%;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #3d0a1f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(79, 12, 40, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* ===== LINKS ===== */
+.login-links {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.login-links a {
+    color: #4F0C28;
+    text-decoration: none;
+    display: block;
+    margin: 0.75rem 0;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.login-links a:hover {
+    color: #C5D2F8;
+    text-decoration: underline;
+}
+
+.terms-text {
+    text-align: center;
+    color: #999;
+    font-size: 0.875rem;
+    margin-top: 1.5rem;
+    line-height: 1.4;
+}
+
+/* ===== VALIDATION ===== */
+.text-danger {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* ===== FOOTER ===== */
+.login-footer {
+    background-color: #4F0C28;
+    color: white;
+    padding: 2.5rem 0 1rem;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-brand {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-brand h5 {
+    color: white;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.footer-brand p {
+    margin: 0.5rem 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.footer-social {
+    flex: 1;
+    min-width: 200px;
+    text-align: right;
+}
+
+.footer-social h6 {
+    color: white;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.social-icons a {
+    color: #C5D2F8;
+    font-size: 1.75rem;
+    text-decoration: none;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.social-icons a:hover {
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* Footer Links - Horizontal */
+.footer-links {
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.footer-links li {
+    display: inline;
+}
+
+.footer-links a {
+    color: #C5D2F8;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    text-align: center;
+    padding-top: 1.5rem;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 0.875rem;
+    opacity: 0.8;
+}
+
+.footer-bottom a {
+    color: #C5D2F8;
+    text-decoration: none;
+}
+
+.footer-bottom a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .login-navbar {
+        padding: 1rem 1.5rem;
+    }
+
+    .login-navbar .brand {
+        font-size: 1.5rem;
+    }
+
+    .hero-placeholder {
+        height: 200px;
+    }
+
+    .login-content {
+        padding: 0 1.5rem 2rem;
+    }
+
+    .login-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .footer-top {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-social {
+        text-align: center;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+
+    .footer-links ul {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}
+
+/* ===== EXTERNAL LOGINS SECTION ===== */
+.external-logins-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #E8E8E8;
+}
+
+.external-logins-section h5 {
+    color: #4F0C28;
+    margin-bottom: 1rem;
+}
+
+.external-logins-section .btn-primary {
+    margin: 0.5rem 0;
+}
+
+/* ===== UTILITIES ===== */
+.text-center {
+    text-align: center;
+}
+
+.mt-2 {
+    margin-top: 2rem;
+}
+
+.mb-2 {
+    margin-bottom: 2rem;
+}

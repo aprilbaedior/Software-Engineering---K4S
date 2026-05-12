@@ -1,0 +1,33 @@
+@page
+@model CS395SI_Spring2026Group1.Pages.ManagerRequest.RequestModel
+@{
+    ViewData["Title"] = "Request Manager Role";
+}
+
+<h2>Request Manager Role</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="ManagerRequest.FullName"></label>
+        <input asp-for="ManagerRequest.FullName" class="form-control" />
+        <span asp-validation-for="ManagerRequest.FullName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ManagerRequest.Email"></label>
+        <input asp-for="ManagerRequest.Email" class="form-control" />
+        <span asp-validation-for="ManagerRequest.Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ManagerRequest.Justification"></label>
+        <textarea asp-for="ManagerRequest.Justification" class="form-control"></textarea>
+        <span asp-validation-for="ManagerRequest.Justification" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Request</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

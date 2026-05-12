@@ -1,0 +1,82 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access denied";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Krumpin 4 Success</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/auth-pages.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="login-navbar">
+        <a href="/" class="brand">K4S</a>
+        <a href="/Identity/Account/Login" class="login-link">Sign In</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="login-content" style="padding-top: 5rem; text-align: center;">
+        <div style="margin-bottom: 2rem;">
+            <i class="bi bi-shield-x" style="font-size: 4rem; color: #dc3545;"></i>
+        </div>
+        <h2 style="color: #dc3545;">Access Denied</h2>
+        <p style="color: #555; margin-bottom: 2rem; line-height: 1.6;">
+            You do not have permission to view this page. If you believe this is an error, please contact your administrator.
+        </p>
+
+        <div class="login-links">
+            <a href="/">
+                <i class="bi bi-house-door me-1"></i> Go to Home
+            </a>
+            <a asp-page="./Login">Sign In with a Different Account</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="login-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <h5>K4S</h5>
+                    <p><strong>Krumpin 4 Success</strong></p>
+                    <p>Empowering youth through creative programming, academic support, and career-focused services.</p>
+                </div>
+                <div class="footer-social">
+                    <h6>Connect With Us</h6>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-links">
+                <ul>
+                    <li><a href="#">Meet The Team</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Accessibility</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>
+                    &copy; 2026 Krumpin 4 Success. All rights reserved. |
+                    <a href="#">Privacy Policy</a> |
+                    <a href="#">Terms of Service</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

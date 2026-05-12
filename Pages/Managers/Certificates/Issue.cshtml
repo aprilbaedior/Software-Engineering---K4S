@@ -1,0 +1,510 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Manager.Certificates.IssueModel
+@{
+    ViewData["Title"] = "Issue Certificate";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-award me-2"></i> Issue Certificate
+            </h1>
+            <p class="text-muted mt-1">Check student eligibility and issue completion certificates.</p>
+        </div>
+        <a asp-page="./Index" class="btn btn-secondary">
+            <i class="bi bi-list-check me-1"></i> View All Certificates
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Step 1: Select Service & Section to Check Eligibility -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <i class="bi bi-clipboard-check me-2"></i> Step 1 — Check Eligibility by Section
+        </div>
+        <div class="card-body">
+            <form method="get" id="eligibilityForm">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label"><strong>Select Service First</strong></label>
+                        <select name="selectedServiceId" id="eligibilityServiceSelect" class="form-select">
+                            <option value="">-- Select a Service --</option>
+                            @foreach (var service in Model.Services)
+                            {
+                                <option value="@service.ServiceID" 
+                                        selected="@(Model.SelectedServiceId == service.ServiceID ? "selected" : null)">
+                                    @service.ServiceName
+                                </option>
+                            }
+                        </select>
+                        <small class="form-text text-muted">Choose the service program first</small>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label"><strong>Then Select Section</strong></label>
+                        <select name="selectedSectionId" id="eligibilitySectionSelect" class="form-select" disabled>
+                            <option value="">-- Select Service First --</option>
+                        </select>
+                        <small class="form-text text-muted">Available sections will appear after selecting service</small>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100" id="checkEligibilityBtn" disabled>
+                            <i class="bi bi-search me-1"></i> Check
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Step 2: Eligibility Results -->
+    @if (Model.SelectedSection != null)
+    {
+        var eligible = Model.EligibilityList.Where(e => e.IsEligible).Count();
+        var total = Model.EligibilityList.Count;
+
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="bi bi-people me-2"></i>
+                    Eligibility Results — Section #@Model.SelectedSection.SectionID
+                    (@(Model.SelectedSection.ServiceName ?? "Unknown"))
+                </span>
+                <span>
+                    <span class="badge bg-success me-1">@eligible Eligible</span>
+                    <span class="badge bg-secondary">@total Enrolled</span>
+                </span>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.EligibilityList.Any())
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-people" style="font-size: 2.5rem; color: #ccc;"></i>
+                        <p class="text-muted mt-3">No students are enrolled in this section yet.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Email</th>
+                                    <th>Attendance</th>
+                                    <th>Approved Strikes</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var s in Model.EligibilityList)
+                                {
+                                <tr class="@(s.IsEligible ? "" : s.AlreadyCertified ? "table-light" : "")">
+                                    <td><strong>@s.Name</strong></td>
+                                    <td>@s.Email</td>
+                                    <td>
+                                        @if (s.TotalMarked == 0)
+                                        {
+                                            <span class="text-muted">No records</span>
+                                        }
+                                        else
+                                        {
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="progress" style="width: 80px; height: 8px;">
+                                                    <div class="progress-bar @(s.MeetsAttendance ? "bg-success" : "bg-danger")"
+                                                         style="width: @s.AttendancePercent%"></div>
+                                                </div>
+                                                <span class="@(s.MeetsAttendance ? "text-success" : "text-danger") fw-semibold">
+                                                    @s.AttendancePercent%
+                                                </span>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge @(s.MeetsStrikeLimit ? "bg-success" : "bg-danger")">
+                                            @s.ApprovedStrikes strike@(s.ApprovedStrikes == 1 ? "" : "s")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (s.AlreadyCertified)
+                                        {
+                                            <span class="badge bg-secondary"><i class="bi bi-check2-circle me-1"></i>Already Issued</span>
+                                        }
+                                        else if (s.IsEligible)
+                                        {
+                                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Eligible</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Not Eligible</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (s.IsEligible)
+                                        {
+                                            <form method="post" asp-page-handler="QuickIssue" style="display:inline;">
+                                                <input type="hidden" name="studentEmail" value="@s.Email" />
+                                                <input type="hidden" name="studentName" value="@s.Name" />
+                                                <input type="hidden" name="serviceId" value="@(Model.SelectedSection.ServiceID ?? "")" />
+                                                <input type="hidden" name="serviceName" value="@(Model.SelectedSection.ServiceName ?? "")" />
+                                                <input type="hidden" name="sectionId" value="@Model.SelectedSection.SectionID" />
+                                                <button type="submit" class="btn btn-sm btn-primary"
+                                                        onclick="return confirm('Issue certificate to @s.Name?')">
+                                                    <i class="bi bi-award me-1"></i> Issue
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (!s.AlreadyCertified)
+                                        {
+                                            <span class="text-muted small">
+                                                @if (!s.MeetsAttendance) { <span>Low attendance</span> }
+                                                @if (!s.MeetsAttendance && !s.MeetsStrikeLimit) { <span> · </span> }
+                                                @if (!s.MeetsStrikeLimit) { <span>Too many strikes</span> }
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-muted small">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Eligibility requires: attendance ≥ 75% · approved strikes ≤ 3
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Manual Override -->
+    <div class="card">
+        <div class="card-header bg-warning">
+            <i class="bi bi-pencil-square me-2"></i> Manual Override — Issue Certificate Directly
+        </div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">Use this to issue a certificate outside the eligibility check (e.g. exceptions approved by administration).</p>
+            <div class="row">
+                <div class="col-lg-7">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                        <!-- Student search instead of dropdown -->
+                        <div class="form-group mb-3">
+                            <label class="form-label">Student <span class="text-danger">*</span></label>
+                            <div class="position-relative">
+                                <input type="text" 
+                                       id="studentSearchInput" 
+                                       class="form-control" 
+                                       placeholder="Start typing student name or email..."
+                                       autocomplete="off"
+                                       required />
+                                <div id="studentSearchResults" class="dropdown-menu w-100" style="max-height: 300px; overflow-y: auto;"></div>
+                            </div>
+                            <input type="hidden" name="studentEmail" id="studentEmailHidden" required />
+                            <input type="hidden" name="studentName" id="studentNameHidden" />
+                            <small class="form-text text-muted">Type at least 2 characters to search</small>
+                            <div id="selectedStudentDisplay" class="mt-2"></div>
+                        </div>
+
+                        <!-- Cascading Service/Section -->
+                        <div class="form-group mb-3">
+                            <label class="form-label">Service <span class="text-danger">*</span></label>
+                            <select id="manualServiceSelect" class="form-select" required>
+                                <option value="">-- Select a Service --</option>
+                                @foreach (var service in Model.Services)
+                                {
+                                    <option value="@service.ServiceID" data-name="@service.ServiceName">
+                                        @service.ServiceName
+                                    </option>
+                                }
+                            </select>
+                            <input type="hidden" name="serviceId" id="serviceIdHidden" />
+                            <input type="hidden" name="serviceName" id="serviceNameHidden" />
+                            <small class="form-text text-muted">Select service first, then section will populate</small>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">Section <span class="text-danger">*</span></label>
+                            <select name="sectionId" id="manualSectionSelect" class="form-select" required disabled>
+                                <option value="">-- Select Service First --</option>
+                            </select>
+                            <small class="form-text text-muted">Available sections will appear after selecting service</small>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="form-label">Notes (Optional)</label>
+                            <textarea name="notes" class="form-control" rows="2"
+                                      placeholder="Reason for manual override..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning" id="manualIssueBtn" disabled
+                                onclick="return confirm('Issue this certificate manually?')">
+                            <i class="bi bi-award me-2"></i> Issue Certificate
+                        </button>
+                        <a asp-page="./Index" class="btn btn-secondary ms-2">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        // ========== STUDENT SEARCH FUNCTIONALITY ==========
+        let searchTimeout;
+        const studentSearchInput = $('#studentSearchInput');
+        const studentSearchResults = $('#studentSearchResults');
+        const studentEmailHidden = $('#studentEmailHidden');
+        const studentNameHidden = $('#studentNameHidden');
+        const selectedStudentDisplay = $('#selectedStudentDisplay');
+
+        studentSearchInput.on('input', function () {
+            const query = $(this).val().trim();
+            
+            clearTimeout(searchTimeout);
+            
+            if (query.length < 2) {
+                studentSearchResults.removeClass('show').empty();
+                return;
+            }
+
+            searchTimeout = setTimeout(function () {
+                searchStudents(query);
+            }, 300); // Debounce for 300ms
+        });
+
+        function searchStudents(query) {
+            studentSearchResults.html('<div class="dropdown-item text-muted"><i class="bi bi-hourglass-split me-2"></i>Searching...</div>');
+            studentSearchResults.addClass('show');
+
+            $.ajax({
+                url: '/Managers/Certificates/Issue?handler=SearchStudents',
+                type: 'GET',
+                data: { query: query },
+                success: function (data) {
+                    studentSearchResults.empty();
+
+                    if (data && data.length > 0) {
+                        $.each(data, function (index, student) {
+                            const item = $('<a></a>')
+                                .addClass('dropdown-item')
+                                .attr('href', '#')
+                                .html(`<strong>${student.name}</strong><br/><small class="text-muted">${student.email}</small>`)
+                                .on('click', function (e) {
+                                    e.preventDefault();
+                                    selectStudent(student);
+                                });
+                            studentSearchResults.append(item);
+                        });
+                    } else {
+                        studentSearchResults.html('<div class="dropdown-item text-muted">No students found</div>');
+                    }
+                },
+                error: function () {
+                    studentSearchResults.html('<div class="dropdown-item text-danger">Error searching students</div>');
+                }
+            });
+        }
+
+        function selectStudent(student) {
+            studentEmailHidden.val(student.email);
+            studentNameHidden.val(student.name);
+            studentSearchInput.val(`${student.name} (${student.email})`);
+            studentSearchResults.removeClass('show').empty();
+            
+            selectedStudentDisplay.html(`
+                <div class="alert alert-info py-2 px-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-person-check me-2"></i>
+                        <strong>${student.name}</strong> <span class="text-muted">(${student.email})</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearStudentSelection()">
+                        <i class="bi bi-x"></i> Clear
+                    </button>
+                </div>
+            `);
+
+            checkManualFormComplete();
+        }
+
+        window.clearStudentSelection = function() {
+            studentEmailHidden.val('');
+            studentNameHidden.val('');
+            studentSearchInput.val('');
+            selectedStudentDisplay.empty();
+            checkManualFormComplete();
+        };
+
+        // Hide dropdown when clicking outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('#studentSearchInput, #studentSearchResults').length) {
+                studentSearchResults.removeClass('show');
+            }
+        });
+
+        // ========== ELIGIBILITY FORM CASCADING DROPDOWN ==========
+        const eligibilityServiceSelect = $('#eligibilityServiceSelect');
+        const eligibilitySectionSelect = $('#eligibilitySectionSelect');
+        const checkEligibilityBtn = $('#checkEligibilityBtn');
+
+        // Restore section dropdown if we have a selected service (after postback)
+        @if (!string.IsNullOrEmpty(Model.SelectedServiceId))
+        {
+            <text>
+            loadEligibilitySections('@Model.SelectedServiceId', @(Model.SelectedSectionId?.ToString() ?? "null"));
+            </text>
+        }
+
+        eligibilityServiceSelect.change(function () {
+            const serviceId = $(this).val();
+            loadEligibilitySections(serviceId, null);
+        });
+
+        function loadEligibilitySections(serviceId, selectedSectionId) {
+            eligibilitySectionSelect.html('<option value="">-- Loading... --</option>');
+            eligibilitySectionSelect.prop('disabled', true);
+            checkEligibilityBtn.prop('disabled', true);
+
+            if (serviceId) {
+                $.ajax({
+                    url: '/Managers/Certificates/Issue?handler=SectionsForService',
+                    type: 'GET',
+                    data: { serviceId: serviceId },
+                    success: function (data) {
+                        eligibilitySectionSelect.html('<option value="">-- Select a Section --</option>');
+
+                        if (data && data.length > 0) {
+                            $.each(data, function (index, item) {
+                                const option = $('<option></option>')
+                                    .val(item.sectionId)
+                                    .text(item.display);
+                                
+                                if (selectedSectionId && item.sectionId == selectedSectionId) {
+                                    option.prop('selected', true);
+                                }
+                                
+                                eligibilitySectionSelect.append(option);
+                            });
+                            eligibilitySectionSelect.prop('disabled', false);
+                        } else {
+                            eligibilitySectionSelect.html('<option value="">-- No sections available --</option>');
+                        }
+                    },
+                    error: function () {
+                        eligibilitySectionSelect.html('<option value="">-- Error loading sections --</option>');
+                        alert('Failed to load sections. Please try again.');
+                    }
+                });
+            } else {
+                eligibilitySectionSelect.html('<option value="">-- Select Service First --</option>');
+            }
+        }
+
+        eligibilitySectionSelect.change(function () {
+            checkEligibilityBtn.prop('disabled', !$(this).val());
+        });
+
+        // ========== MANUAL FORM CASCADING DROPDOWN ==========
+        const manualServiceSelect = $('#manualServiceSelect');
+        const manualSectionSelect = $('#manualSectionSelect');
+        const manualIssueBtn = $('#manualIssueBtn');
+        const serviceIdHidden = $('#serviceIdHidden');
+        const serviceNameHidden = $('#serviceNameHidden');
+
+        manualServiceSelect.change(function () {
+            const serviceId = $(this).val();
+            const serviceName = $(this).find(':selected').data('name') || '';
+            
+            serviceIdHidden.val(serviceId);
+            serviceNameHidden.val(serviceName);
+
+            manualSectionSelect.html('<option value="">-- Loading... --</option>');
+            manualSectionSelect.prop('disabled', true);
+            manualIssueBtn.prop('disabled', true);
+
+            if (serviceId) {
+                $.ajax({
+                    url: '/Managers/Certificates/Issue?handler=SectionsForService',
+                    type: 'GET',
+                    data: { serviceId: serviceId },
+                    success: function (data) {
+                        manualSectionSelect.html('<option value="">-- Select a Section --</option>');
+
+                        if (data && data.length > 0) {
+                            $.each(data, function (index, item) {
+                                manualSectionSelect.append(
+                                    $('<option></option>')
+                                        .val(item.sectionId)
+                                        .text(item.display)
+                                );
+                            });
+                            manualSectionSelect.prop('disabled', false);
+                        } else {
+                            manualSectionSelect.html('<option value="">-- No sections available --</option>');
+                        }
+                        checkManualFormComplete();
+                    },
+                    error: function () {
+                        manualSectionSelect.html('<option value="">-- Error loading sections --</option>');
+                        alert('Failed to load sections. Please try again.');
+                    }
+                });
+            } else {
+                manualSectionSelect.html('<option value="">-- Select Service First --</option>');
+            }
+        });
+
+        manualSectionSelect.change(function () {
+            checkManualFormComplete();
+        });
+
+        studentSearchInput.on('change', function () {
+            checkManualFormComplete();
+        });
+
+        function checkManualFormComplete() {
+            const hasStudent = studentEmailHidden.val();
+            const hasService = serviceIdHidden.val();
+            const hasSection = manualSectionSelect.val();
+            manualIssueBtn.prop('disabled', !(hasStudent && hasService && hasSection));
+        }
+    });
+</script>
+
+<style>
+    #studentSearchResults {
+        display: none;
+        position: absolute;
+        z-index: 1000;
+    }
+    #studentSearchResults.show {
+        display: block;
+    }
+    #studentSearchResults .dropdown-item {
+        cursor: pointer;
+        padding: 10px 15px;
+    }
+    #studentSearchResults .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+}

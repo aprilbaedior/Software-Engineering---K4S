@@ -1,0 +1,78 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Registration.RoleSelectionModel
+@{
+    ViewData["Title"] = "Select Your Role";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">Welcome to Krumpin 4 Success!</h2>
+            <p class="text-center text-muted mb-4">Please select how you'd like to participate in our program.</p>
+
+            <form method="post">
+                <div class="row g-4">
+                    <!-- Student Card -->
+                    <div class="col-md-6">
+                        <label for="roleStudent" class="w-100">
+                            <div class="card h-100 role-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-person fs-1 text-primary mb-3"></i>
+                                    <h4 class="card-title">Student</h4>
+                                    <p class="card-text">Apply as a student to participate in our skills training and personal development programs.</p>
+                                    <div class="form-check d-flex justify-content-center mt-3">
+                                        <input class="form-check-input me-2" type="radio" name="SelectedRole" value="Student" id="roleStudent" required>
+                                        <label class="form-check-label fw-bold" for="roleStudent">
+                                            Select Student
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Faculty Card -->
+                    <div class="col-md-6">
+                        <label for="roleFaculty" class="w-100">
+                            <div class="card h-100 role-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-briefcase-fill fs-1 text-success mb-3"></i>
+                                    <h4 class="card-title">Faculty/Staff</h4>
+                                    <p class="card-text">Apply to work with Keys 4 Success as an instructor, program manager, or administrator.</p>
+                                    <div class="form-check d-flex justify-content-center mt-3">
+                                        <input class="form-check-input me-2" type="radio" name="SelectedRole" value="Faculty" id="roleFaculty" required>
+                                        <label class="form-check-label fw-bold" for="roleFaculty">
+                                            Select Faculty/Staff
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">Continue to Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .role-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid #dee2e6;
+    }
+    .role-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        border-color: var(--bs-primary);
+    }
+    input[type="radio"]:checked ~ label .role-card,
+    label:has(input[type="radio"]:checked) .role-card {
+        border-color: var(--bs-primary);
+        background-color: #f8f9fa;
+    }
+</style>

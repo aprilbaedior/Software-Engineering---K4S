@@ -1,0 +1,221 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Manager.Students.ProfileModel
+@{
+    ViewData["Title"] = "Student Profile — " + Model.Student?.Name;
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-person-circle me-2"></i> @Model.Student?.Name
+            </h1>
+            <p class="text-muted mt-1">@Model.Student?.Email</p>
+        </div>
+        <a asp-page="./Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to All Students
+        </a>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- LEFT COLUMN: Personal Info + Emergency Contacts -->
+        <div class="col-lg-5">
+
+            <!-- Personal Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-person me-2"></i> Personal Information
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Full Name</dt>
+                        <dd class="col-sm-7">@(Model.Student?.Name ?? "—")</dd>
+
+                        <dt class="col-sm-5">Email</dt>
+                        <dd class="col-sm-7">@(Model.Student?.Email ?? "—")</dd>
+
+                        <dt class="col-sm-5">Phone</dt>
+                        <dd class="col-sm-7">@(Model.Student?.PhoneNum ?? "—")</dd>
+
+                        <dt class="col-sm-5">Date of Birth</dt>
+                        <dd class="col-sm-7">@(Model.Student?.DateOfBirth.HasValue == true ? Model.Student.DateOfBirth.Value.ToString("MM/dd/yyyy") : "—")</dd>
+
+                        <dt class="col-sm-5">Address</dt>
+                        <dd class="col-sm-7">@(Model.Student?.Address ?? "—")</dd>
+
+                        <dt class="col-sm-5">Sex</dt>
+                        <dd class="col-sm-7">@(Model.Student?.Sex.HasValue == true ? Model.Student.Sex.ToString() : "—")</dd>
+
+                        <dt class="col-sm-5">Race</dt>
+                        <dd class="col-sm-7">@(Model.Student?.Race ?? "—")</dd>
+
+                        <dt class="col-sm-5">US Citizen</dt>
+                        <dd class="col-sm-7">@(Model.Student?.USCitizen.HasValue == true ? Model.Student.USCitizen.ToString() : "—")</dd>
+
+                        <dt class="col-sm-5">Under 18</dt>
+                        <dd class="col-sm-7">@(Model.Student?.Under18.HasValue == true ? Model.Student.Under18.ToString() : "—")</dd>
+
+                        <dt class="col-sm-5">Application Status</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge @(Model.Student?.ApplicationStatus == "Approved" ? "bg-success" : Model.Student?.ApplicationStatus == "Denied" ? "bg-danger" : "bg-warning text-dark")">
+                                @(Model.Student?.ApplicationStatus ?? "Unknown")
+                            </span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Education & Employment -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-mortarboard me-2"></i> Education &amp; Employment
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">HS Graduate</dt>
+                        <dd class="col-sm-7">@(Model.Student?.HSGrad.HasValue == true ? Model.Student.HSGrad.ToString() : "—")</dd>
+
+                        <dt class="col-sm-5">School Name</dt>
+                        <dd class="col-sm-7">@(Model.Student?.SchoolName ?? "—")</dd>
+
+                        <dt class="col-sm-5">School Address</dt>
+                        <dd class="col-sm-7">@(Model.Student?.SchoolAddress ?? "—")</dd>
+
+                        <dt class="col-sm-5">Grade</dt>
+                        <dd class="col-sm-7">@(Model.Student?.Grade.HasValue == true ? Model.Student.Grade.ToString() : "—")</dd>
+
+                        <dt class="col-sm-5">Employed</dt>
+                        <dd class="col-sm-7">@(Model.Student?.Employed.HasValue == true ? Model.Student.Employed.ToString() : "—")</dd>
+
+                        <dt class="col-sm-5">Business</dt>
+                        <dd class="col-sm-7">@(Model.Student?.BusinessName ?? "—")</dd>
+
+                        <dt class="col-sm-5">Talents</dt>
+                        <dd class="col-sm-7">@(Model.Student?.Talents ?? "—")</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-telephone-fill me-2"></i> Emergency Contacts
+                </div>
+                <div class="card-body">
+                    @{
+                        var contacts = new[]
+                        {
+                            new { Name = Model.Student?.EmerName, Relation = Model.Student?.EmerRelation, Phone = Model.Student?.EmerPhoneNum1, Address = Model.Student?.EmerAddress },
+                            new { Name = Model.Student?.EmerName2, Relation = Model.Student?.EmerRelation2, Phone = Model.Student?.EmerPhoneNum2, Address = Model.Student?.EmerAddress2 },
+                            new { Name = Model.Student?.EmerName3, Relation = Model.Student?.EmerRelation3, Phone = Model.Student?.EmerPhoneNum3, Address = Model.Student?.EmerAddress3 }
+                        };
+                        int contactNum = 0;
+                    }
+                    @foreach (var c in contacts)
+                    {
+                        contactNum++;
+                        if (!string.IsNullOrEmpty(c.Name))
+                        {
+                        <div class="mb-3 pb-3 @(contactNum < 3 ? "border-bottom" : "")">
+                            <div class="fw-semibold">@contactNum. @c.Name <span class="text-muted fw-normal">(@(c.Relation ?? "—"))</span></div>
+                            <div class="small text-muted mt-1">
+                                <i class="bi bi-telephone me-1"></i>@(c.Phone ?? "—")<br />
+                                <i class="bi bi-geo-alt me-1"></i>@(c.Address ?? "—")
+                            </div>
+                        </div>
+                        }
+                    }
+                    @if (string.IsNullOrEmpty(Model.Student?.EmerName) && string.IsNullOrEmpty(Model.Student?.EmerName2) && string.IsNullOrEmpty(Model.Student?.EmerName3))
+                    {
+                        <p class="text-muted mb-0">No emergency contacts on file.</p>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Enrolled Sections + Attendance -->
+        <div class="col-lg-7">
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-calendar-check me-2"></i> Enrolled Sections &amp; Attendance</span>
+                    <span class="badge" style="background-color: #C5D2F8; color: #4F0C28;">@Model.EnrolledSections.Count section(s)</span>
+                </div>
+                <div class="card-body p-0">
+                    @if (!Model.EnrolledSections.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-calendar-x" style="font-size: 2.5rem; color: #ccc;"></i>
+                            <p class="text-muted mt-3">This student is not enrolled in any sections.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var sec in Model.EnrolledSections)
+                        {
+                        <div class="p-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong>@sec.ServiceName</strong>
+                                    <span class="text-muted ms-2">Section #@sec.SectionID</span>
+                                    @if (sec.HasCertificate)
+                                    {
+                                        <span class="badge bg-success ms-2"><i class="bi bi-award me-1"></i>Certified</span>
+                                    }
+                                </div>
+                                <span class="badge @(sec.Status == "Active" ? "bg-success" : "bg-secondary")">@sec.Status</span>
+                            </div>
+                            <div class="text-muted small mb-2">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                @if (!string.IsNullOrEmpty(sec.WeekDay))
+                                {
+                                    foreach (var day in sec.WeekDay.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        <span class="badge me-1" style="background-color:#C5D2F8;color:#4F0C28;font-size:0.72rem;">@day.Trim()</span>
+                                    }
+                                }
+                                else { <text>—</text> }
+                                &nbsp;|&nbsp;
+                                <i class="bi bi-clock me-1"></i>@(sec.StartTime.HasValue ? DateTime.Today.Add(sec.StartTime.Value).ToString("hh:mm tt") : "—") – @(sec.EndTime.HasValue ? DateTime.Today.Add(sec.EndTime.Value).ToString("hh:mm tt") : "—") &nbsp;|&nbsp;
+                                <i class="bi bi-calendar-range me-1"></i>@(sec.StartDate?.ToString("MM/dd/yyyy") ?? "—") – @(sec.EndDate?.ToString("MM/dd/yyyy") ?? "—")
+                            </div>
+
+                            <!-- Attendance bar -->
+                            @{
+                                int total = sec.PresentCount + sec.LateCount + sec.ExcusedCount + sec.AbsentCount + sec.NotMarkedCount;
+                            }
+                            @if (total > 0)
+                            {
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <div class="progress flex-grow-1" style="height: 10px;">
+                                        <div class="progress-bar bg-success" style="width: @(sec.AttendancePercent)%" title="Attendance @sec.AttendancePercent%"></div>
+                                    </div>
+                                    <span class="small fw-semibold @(sec.AttendancePercent >= 75 ? "text-success" : "text-danger")">
+                                        @sec.AttendancePercent%
+                                    </span>
+                                </div>
+                                <div class="d-flex gap-3 small text-muted">
+                                    <span><span class="text-success fw-semibold">@sec.PresentCount</span> Present</span>
+                                    <span><span class="text-warning fw-semibold">@sec.LateCount</span> Late</span>
+                                    <span><span class="text-info fw-semibold">@sec.ExcusedCount</span> Excused</span>
+                                    <span><span class="text-danger fw-semibold">@sec.AbsentCount</span> Absent</span>
+                                    <span><span class="text-muted fw-semibold">@sec.NotMarkedCount</span> Not Marked</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted small mb-0">No attendance records yet.</p>
+                            }
+                        </div>
+                        }
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

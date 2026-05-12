@@ -1,0 +1,819 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Registration.CreateModel
+
+@{
+    ViewData["Title"] = "Student Application";
+}
+<link rel="stylesheet" href="~/CS395SI_Spring2023_Group1.styles.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Student Application</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Please complete all required information to register for Krumpin 4 Success programs.
+                    </p>
+
+                    <form method="post" id="registrationForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <!-- Progress indicators -->
+                        <div class="progress mb-4">
+                            <div class="progress-bar" role="progressbar" style="width: 25%;" id="progressBar">25%</div>
+                        </div>
+
+                        <div class="form-nav mb-4">
+                            <div class="nav nav-tabs" id="formTabs">
+                                <a class="nav-link active" id="personal-tab" data-toggle="tab" href="#personal">
+                                    <i class="fas fa-user"></i> Personal Info
+                                </a>
+                                <a class="nav-link" id="employment-tab" data-toggle="tab" href="#employment">
+                                    <i class="fas fa-briefcase"></i> Employment
+                                </a>
+                                <a class="nav-link" id="emergency-tab" data-toggle="tab" href="#emergency">
+                                    <i class="fas fa-phone-alt"></i> Emergency Contacts
+                                </a>
+                                <a class="nav-link" id="review-tab" data-toggle="tab" href="#review">
+                                    <i class="fas fa-check-circle"></i> Review
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="tab-content">
+                            <!-- Personal Information Section -->
+                            <div class="tab-pane fade show active" id="personal">
+                                <h3 class="section-title">Personal Information</h3>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.Name" class="form-label">Full Name
+                                            <span class="text-danger">*</span></label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.Name" class="form-control"
+                                            placeholder="John Doe" required />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.Name"
+                                            class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.Email" class="form-label">Email
+                                            <span class="text-danger">*</span></label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.Email" class="form-control"
+                                            readonly />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.Email"
+                                            class="text-danger"></span>
+                                        <small class="form-text text-muted">Email is linked to your account and cannot
+                                            be changed.</small>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.PhoneNum" class="form-label">Phone
+                                            Number <span class="text-danger">*</span></label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.PhoneNum"
+                                            class="form-control phone-mask" placeholder="(xxx) xxx-xxxx" required />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.PhoneNum"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Spring2023_Group1_Profile_Sys.Address" class="form-label">Home
+                                        Address <span class="text-danger">*</span></label>
+                                    <input asp-for="Spring2023_Group1_Profile_Sys.Address" class="form-control"
+                                        placeholder="123 Main St, Jacksonville, FL 32211" required />
+                                    <span asp-validation-for="Spring2023_Group1_Profile_Sys.Address"
+                                        class="text-danger"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.DateOfBirth"
+                                            class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.DateOfBirth" class="form-control"
+                                            type="date" required />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.DateOfBirth"
+                                            class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Sex <span class="text-danger">*</span></label>
+                                        <div class="d-flex gap-3 mt-2">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input"
+                                                    name="Spring2023_Group1_Profile_Sys.Sex" value="M" id="sexMale"
+                                                    required />
+                                                <label class="form-check-label" for="sexMale">Male</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input"
+                                                    name="Spring2023_Group1_Profile_Sys.Sex" value="F" id="sexFemale" />
+                                                <label class="form-check-label" for="sexFemale">Female</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input"
+                                                    name="Spring2023_Group1_Profile_Sys.Sex" value="O" id="sexOther" />
+                                                <label class="form-check-label" for="sexOther">Other</label>
+                                            </div>
+                                        </div>
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.Sex"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.Race"
+                                            class="form-label">Race/Ethnicity</label>
+                                        <select asp-for="Spring2023_Group1_Profile_Sys.Race" class="form-select">
+                                            <option value="">Select race/ethnicity</option>
+                                            <option value="White">White</option>
+                                            <option value="Black or African American">Black or African American</option>
+                                            <option value="Hispanic or Latino">Hispanic or Latino</option>
+                                            <option value="Asian">Asian</option>
+                                            <option value="American Indian or Alaska Native">American Indian or Alaska
+                                                Native</option>
+                                            <option value="Native Hawaiian or Other Pacific Islander">Native Hawaiian or
+                                                Other Pacific Islander</option>
+                                            <option value="Two or More Races">Two or More Races</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.Race"
+                                            class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.USCitizen" class="form-label">U.S.
+                                            Citizen?</label>
+                                        <select asp-for="Spring2023_Group1_Profile_Sys.USCitizen" class="form-select">
+                                            <option value="">Select an option</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.USCitizen"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Are you under 18? <span
+                                                class="text-danger">*</span></label>
+                                        <div class="d-flex gap-3 mt-2">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input"
+                                                    asp-for="Spring2023_Group1_Profile_Sys.Under18" value="Y"
+                                                    id="under18Yes" required
+                                                    onclick="toggleParentGuardianFields(true)" />
+                                                <label class="form-check-label" for="under18Yes">Yes</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input"
+                                                    asp-for="Spring2023_Group1_Profile_Sys.Under18" value="N"
+                                                    id="under18No" onclick="toggleParentGuardianFields(false)" />
+                                                <label class="form-check-label" for="under18No">No</label>
+                                            </div>
+                                        </div>
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.Under18"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div id="parentGuardianSection" style="display:none">
+                                    <div class="card mb-3 border-info">
+                                        <div class="card-header bg-info text-white">
+                                            Parent/Guardian Information
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.PGName"
+                                                        class="form-label">Parent/Guardian Name</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.PGName"
+                                                        class="form-control" placeholder="Jane Doe" />
+                                                    <span asp-validation-for="Spring2023_Group1_Profile_Sys.PGName"
+                                                        class="text-danger"></span>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.HomePhone"
+                                                        class="form-label">Home Phone</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.HomePhone"
+                                                        class="form-control phone-mask" placeholder="(xxx) xxx-xxxx" />
+                                                    <span asp-validation-for="Spring2023_Group1_Profile_Sys.HomePhone"
+                                                        class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4 class="mt-4">Education Information</h4>
+                                <hr />
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.HSGrad" class="form-label">High
+                                            School Graduate?</label>
+                                        <select asp-for="Spring2023_Group1_Profile_Sys.HSGrad" class="form-select"
+                                            id="hsGrad">
+                                            <option value="">Select an option</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.HSGrad"
+                                            class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3" id="gradeField">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.Grade" class="form-label">Current
+                                            Grade</label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.Grade" class="form-control"
+                                            type="number" min="1" max="12" placeholder="1-12" />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.Grade"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.SchoolName"
+                                            class="form-label">School Name</label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.SchoolName" class="form-control"
+                                            placeholder="Washington High School" />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.SchoolName"
+                                            class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.SchoolAddress"
+                                            class="form-label">School Address</label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.SchoolAddress"
+                                            class="form-control" placeholder="456 School Rd, Jacksonville, FL 32211" />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.SchoolAddress"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <h4 class="mt-4">License Information</h4>
+                                <hr />
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.LicenseNum"
+                                            class="form-label">License Number</label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.LicenseNum" class="form-control"
+                                            placeholder="L123-456-78-910-1" />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseNum"
+                                            class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.LicenseState"
+                                            class="form-label">License State</label>
+                                        <select asp-for="Spring2023_Group1_Profile_Sys.LicenseState"
+                                            class="form-select">
+                                            <option value="">Select a state</option>
+                                            <option value="FL">Florida</option>
+                                            <option value="GA">Georgia</option>
+                                            <option value="AL">Alabama</option>
+                                            <option value="SC">South Carolina</option>
+                                            <option value="NC">North Carolina</option>
+                                            <!-- More states can be added here -->
+                                        </select>
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseState"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.LicenseIssue"
+                                            class="form-label">License Issue Date</label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.LicenseIssue" class="form-control"
+                                            type="date" />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseIssue"
+                                            class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.LicenseExp"
+                                            class="form-label">License Expiration Date</label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.LicenseExp" class="form-control"
+                                            type="date" />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseExp"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Spring2023_Group1_Profile_Sys.LicenseClass"
+                                        class="form-label">License Class</label>
+                                    <select asp-for="Spring2023_Group1_Profile_Sys.LicenseClass" class="form-select">
+                                        <option value="">Select license class</option>
+                                        <option value="Class A">Class A</option>
+                                        <option value="Class B">Class B</option>
+                                        <option value="Class C">Class C</option>
+                                        <option value="Class D">Class D</option>
+                                        <option value="Class E">Class E</option>
+                                        <option value="Class M">Class M (Motorcycle)</option>
+                                    </select>
+                                    <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseClass"
+                                        class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Spring2023_Group1_Profile_Sys.Talents" class="form-label">Talents or
+                                        Special Skills</label>
+                                    <textarea asp-for="Spring2023_Group1_Profile_Sys.Talents" class="form-control"
+                                        rows="3" placeholder="Dancing, singing, sports, etc."></textarea>
+                                    <span asp-validation-for="Spring2023_Group1_Profile_Sys.Talents"
+                                        class="text-danger"></span>
+                                </div>
+
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="button" class="btn btn-primary next-btn"
+                                        data-section="employment">Next: Employment <i
+                                            class="fas fa-arrow-right ms-2"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Employment Section -->
+                            <div class="tab-pane fade" id="employment">
+                                <h3 class="section-title">Employment Information</h3>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Are you currently employed?</label>
+                                    <div class="d-flex gap-3 mt-2">
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input"
+                                                asp-for="Spring2023_Group1_Profile_Sys.Employed" value="Y"
+                                                id="employedYes" onclick="toggleEmploymentFields(true)" />
+                                            <label class="form-check-label" for="employedYes">Yes</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input"
+                                                asp-for="Spring2023_Group1_Profile_Sys.Employed" value="N"
+                                                id="employedNo" onclick="toggleEmploymentFields(false)" />
+                                            <label class="form-check-label" for="employedNo">No</label>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="Spring2023_Group1_Profile_Sys.Employed"
+                                        class="text-danger"></span>
+                                </div>
+
+                                <div id="employmentFields" style="display:none">
+                                    <div class="mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.BusinessName"
+                                            class="form-label">Employer/Business Name</label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.BusinessName" class="form-control"
+                                            placeholder="Company Name" />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.BusinessName"
+                                            class="text-danger"></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.BusinessAddress"
+                                            class="form-label">Business Address</label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.BusinessAddress"
+                                            class="form-control"
+                                            placeholder="789 Business Ave, Jacksonville, FL 32211" />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.BusinessAddress"
+                                            class="text-danger"></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="Spring2023_Group1_Profile_Sys.BusinessPhone"
+                                            class="form-label">Business Phone</label>
+                                        <input asp-for="Spring2023_Group1_Profile_Sys.BusinessPhone"
+                                            class="form-control phone-mask" placeholder="(xxx) xxx-xxxx" />
+                                        <span asp-validation-for="Spring2023_Group1_Profile_Sys.BusinessPhone"
+                                            class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary prev-btn" data-section="personal"><i
+                                            class="fas fa-arrow-left me-2"></i> Previous</button>
+                                    <button type="button" class="btn btn-primary next-btn"
+                                        data-section="emergency">Next: Emergency Contacts <i
+                                            class="fas fa-arrow-right ms-2"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Emergency Contacts Section -->
+                            <div class="tab-pane fade" id="emergency">
+                                <h3 class="section-title">Emergency Contact Information</h3>
+                                <p class="text-muted">Please provide at least one emergency contact.</p>
+
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Primary Contact <span class="text-danger">*</span></h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label asp-for="Spring2023_Group1_Profile_Sys.EmerName"
+                                                    class="form-label">Contact Name <span
+                                                        class="text-danger">*</span></label>
+                                                <input asp-for="Spring2023_Group1_Profile_Sys.EmerName"
+                                                    class="form-control" placeholder="John Smith" required />
+                                                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerName"
+                                                    class="text-danger"></span>
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label asp-for="Spring2023_Group1_Profile_Sys.EmerRelation"
+                                                    class="form-label">Relationship <span
+                                                        class="text-danger">*</span></label>
+                                                <input asp-for="Spring2023_Group1_Profile_Sys.EmerRelation"
+                                                    class="form-control" placeholder="Parent, Sibling, etc." required />
+                                                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerRelation"
+                                                    class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum1"
+                                                    class="form-label">Phone Number <span
+                                                        class="text-danger">*</span></label>
+                                                <input asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum1"
+                                                    class="form-control phone-mask" placeholder="(xxx) xxx-xxxx"
+                                                    required />
+                                                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum1"
+                                                    class="text-danger"></span>
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label asp-for="Spring2023_Group1_Profile_Sys.EmerAddress"
+                                                    class="form-label">Address</label>
+                                                <input asp-for="Spring2023_Group1_Profile_Sys.EmerAddress"
+                                                    class="form-control"
+                                                    placeholder="123 Main St, Jacksonville, FL 32211" />
+                                                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerAddress"
+                                                    class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-outline-secondary" id="showContact2">
+                                        <i class="fas fa-plus"></i> Add Secondary Contact
+                                    </button>
+                                </div>
+
+                                <div id="contact2Section" style="display:none">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Secondary Contact</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.EmerName2"
+                                                        class="form-label">Contact Name</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.EmerName2"
+                                                        class="form-control" placeholder="Jane Smith" />
+                                                    <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerName2"
+                                                        class="text-danger"></span>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.EmerRelation2"
+                                                        class="form-label">Relationship</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.EmerRelation2"
+                                                        class="form-control" placeholder="Parent, Sibling, etc." />
+                                                    <span
+                                                        asp-validation-for="Spring2023_Group1_Profile_Sys.EmerRelation2"
+                                                        class="text-danger"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum2"
+                                                        class="form-label">Phone Number</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum2"
+                                                        class="form-control phone-mask" placeholder="(xxx) xxx-xxxx" />
+                                                    <span
+                                                        asp-validation-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum2"
+                                                        class="text-danger"></span>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.EmerAddress2"
+                                                        class="form-label">Address</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.EmerAddress2"
+                                                        class="form-control"
+                                                        placeholder="123 Main St, Jacksonville, FL 32211" />
+                                                    <span
+                                                        asp-validation-for="Spring2023_Group1_Profile_Sys.EmerAddress2"
+                                                        class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-outline-secondary" id="showContact3"
+                                        style="display:none">
+                                        <i class="fas fa-plus"></i> Add Tertiary Contact
+                                    </button>
+                                </div>
+
+                                <div id="contact3Section" style="display:none">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Tertiary Contact</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.EmerName3"
+                                                        class="form-label">Contact Name</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.EmerName3"
+                                                        class="form-control" placeholder="Joseph Doe" />
+                                                    <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerName3"
+                                                        class="text-danger"></span>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.EmerRelation3"
+                                                        class="form-label">Relationship</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.EmerRelation3"
+                                                        class="form-control" placeholder="Parent, Sibling, etc." />
+                                                    <span
+                                                        asp-validation-for="Spring2023_Group1_Profile_Sys.EmerRelation3"
+                                                        class="text-danger"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum3"
+                                                        class="form-label">Phone Number</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum3"
+                                                        class="form-control phone-mask" placeholder="(xxx) xxx-xxxx" />
+                                                    <span
+                                                        asp-validation-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum3"
+                                                        class="text-danger"></span>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label asp-for="Spring2023_Group1_Profile_Sys.EmerAddress3"
+                                                        class="form-label">Address</label>
+                                                    <input asp-for="Spring2023_Group1_Profile_Sys.EmerAddress3"
+                                                        class="form-control"
+                                                        placeholder="123 Main St, Jacksonville, FL 32211" />
+                                                    <span
+                                                        asp-validation-for="Spring2023_Group1_Profile_Sys.EmerAddress3"
+                                                        class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="display:none;">
+                                    <label asp-for="Spring2023_Group1_Profile_Sys.ApplicationStatus"
+                                        class="control-label"></label>
+                                    <input asp-for="Spring2023_Group1_Profile_Sys.ApplicationStatus"
+                                        class="form-control" value="Pending" />
+                                    <span asp-validation-for="Spring2023_Group1_Profile_Sys.ApplicationStatus"
+                                        class="text-danger"></span>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary prev-btn"
+                                        data-section="employment"><i class="fas fa-arrow-left me-2"></i>
+                                        Previous</button>
+                                    <button type="button" class="btn btn-primary next-btn" data-section="review">Review
+                                        Application <i class="fas fa-arrow-right ms-2"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Review Section -->
+                            <div class="tab-pane fade" id="review">
+                                <h3 class="section-title">Review Your Application</h3>
+                                <p class="text-muted">Please review your information before submitting. You can go back
+                                    to any section to make changes.</p>
+
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i> After submission, your application will be
+                                    reviewed by our staff. You will receive an email notification once your application
+                                    is approved.
+                                </div>
+
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Personal Information</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-2">
+                                            <div class="col-md-4 fw-bold">Name:</div>
+                                            <div class="col-md-8" id="review-name"></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-4 fw-bold">Email:</div>
+                                            <div class="col-md-8" id="review-email"></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-4 fw-bold">Phone:</div>
+                                            <div class="col-md-8" id="review-phone"></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-4 fw-bold">Address:</div>
+                                            <div class="col-md-8" id="review-address"></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-4 fw-bold">Date of Birth:</div>
+                                            <div class="col-md-8" id="review-dob"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Emergency Contact</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-2">
+                                            <div class="col-md-4 fw-bold">Primary Contact:</div>
+                                            <div class="col-md-8" id="review-emergency"></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-4 fw-bold">Relationship:</div>
+                                            <div class="col-md-8" id="review-relation"></div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-md-4 fw-bold">Phone:</div>
+                                            <div class="col-md-8" id="review-emergency-phone"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" id="termsAgreement" required>
+                                    <label class="form-check-label" for="termsAgreement">
+                                        I certify that the information provided is true and complete to the best of my
+                                        knowledge. I understand that providing false information may result in denial of
+                                        services.
+                                    </label>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary prev-btn" data-section="emergency"><i
+                                            class="fas fa-arrow-left me-2"></i> Previous</button>
+                                    <button type="submit" class="btn btn-success" id="submitBtn" disabled>
+                                        <i class="fas fa-check-circle me-2"></i> Submit Application
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div> <!-- End of tab-content -->
+                    </form>
+                </div> <!-- End of card-body -->
+            </div> <!-- End of card -->
+        </div> <!-- End of col -->
+    </div> <!-- End of row -->
+</div> <!-- End of container -->
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize phone number masks
+            $('.phone-mask').inputmask('(999) 999-9999', {
+                placeholder: '(___) ___-____',
+                clearMaskOnLostFocus: false
+            });
+
+            // Tab navigation
+            $('.next-btn').click(function () {
+                const nextSection = $(this).data('section');
+                $(`#${nextSection}-tab`).tab('show');
+                updateProgressBar(nextSection);
+            });
+
+            $('.prev-btn').click(function () {
+                const prevSection = $(this).data('section');
+                $(`#${prevSection}-tab`).tab('show');
+                updateProgressBar(prevSection);
+            });
+
+            $('#formTabs a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+                const section = $(this).attr('id').replace('-tab', '');
+                updateProgressBar(section);
+            });
+
+            // Show/hide employment fields based on employment status
+            $('#employedYes').click(function () {
+                toggleEmploymentFields(true);
+            });
+
+            $('#employedNo').click(function () {
+                toggleEmploymentFields(false);
+            });
+
+            // Show/hide parent/guardian fields based on under 18 status
+            $('#under18Yes').click(function () {
+                toggleParentGuardianFields(true);
+            });
+
+            $('#under18No').click(function () {
+                toggleParentGuardianFields(false);
+            });
+
+            // Show/hide grade field based on high school graduate status
+            $('#hsGrad').change(function () {
+                if ($(this).val() === 'N') {
+                    $('#gradeField').show();
+                } else {
+                    $('#gradeField').hide();
+                }
+            });
+
+            // Emergency contact sections
+            $('#showContact2').click(function () {
+                $('#contact2Section').show();
+                $(this).hide();
+                $('#showContact3').show();
+            });
+
+            $('#showContact3').click(function () {
+                $('#contact3Section').show();
+                $(this).hide();
+            });
+
+            // Terms agreement checkbox
+            $('#termsAgreement').change(function () {
+                $('#submitBtn').prop('disabled', !this.checked);
+            });
+
+            // Review page
+            $('.next-btn[data-section="review"]').click(function () {
+                // Populate review fields
+                $('#review-name').text($('#Spring2023_Group1_Profile_Sys_Name').val());
+                $('#review-email').text($('#Spring2023_Group1_Profile_Sys_Email').val());
+                $('#review-phone').text($('#Spring2023_Group1_Profile_Sys_PhoneNum').val());
+                $('#review-address').text($('#Spring2023_Group1_Profile_Sys_Address').val());
+                $('#review-dob').text($('#Spring2023_Group1_Profile_Sys_DateOfBirth').val());
+                $('#review-emergency').text($('#Spring2023_Group1_Profile_Sys_EmerName').val());
+                $('#review-relation').text($('#Spring2023_Group1_Profile_Sys_EmerRelation').val());
+                $('#review-emergency-phone').text($('#Spring2023_Group1_Profile_Sys_EmerPhoneNum1').val());
+            });
+        });
+
+        // Function to update progress bar
+        function updateProgressBar(section) {
+            let progress = 25; // Default for personal section
+
+            switch (section) {
+                case 'personal':
+                    progress = 25;
+                    break;
+                case 'employment':
+                    progress = 50;
+                    break;
+                case 'emergency':
+                    progress = 75;
+                    break;
+                case 'review':
+                    progress = 100;
+                    break;
+            }
+
+            $('#progressBar').css('width', progress + '%').text(progress + '%');
+        }
+
+        function toggleEmploymentFields(show) {
+            if (show) {
+                $('#employmentFields').show();
+            } else {
+                $('#employmentFields').hide();
+            }
+        }
+
+        function toggleParentGuardianFields(show) {
+            if (show) {
+                $('#parentGuardianSection').show();
+            } else {
+                $('#parentGuardianSection').hide();
+            }
+        }
+    </script>
+}

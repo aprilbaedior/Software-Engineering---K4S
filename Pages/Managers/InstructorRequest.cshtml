@@ -1,0 +1,190 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Manager.InstructorRequestsModel
+@{
+    ViewData["Title"] = "Instructor Requests";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-person-plus me-2"></i> Instructor Role Requests
+            </h1>
+            <p class="text-muted mt-1">Review and manage requests to become a K4S Instructor.</p>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "Pending" ? "active" : "")"
+               asp-page="./InstructorRequest" asp-route-tab="Pending">
+                Pending
+                <span class="badge ms-1" style="background-color: #C5D2F8; color: #4F0C28;">@Model.PendingCount</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "Approved" ? "active" : "")"
+               asp-page="./InstructorRequest" asp-route-tab="Approved">
+                Approved
+                <span class="badge ms-1" style="background-color: #28a745; color: white;">@Model.ApprovedCount</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.ActiveTab == "Denied" ? "active" : "")"
+               asp-page="./InstructorRequest" asp-route-tab="Denied">
+                Denied
+                <span class="badge ms-1" style="background-color: #dc3545; color: white;">@Model.DeniedCount</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Requests Table -->
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-list-check me-2"></i> @Model.ActiveTab Requests
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Requests.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Applicant</th>
+                                <th>Email</th>
+                                <th>Speciality</th>
+                                <th>Justification</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                                @if (Model.ActiveTab != "Pending")
+                                {
+                                    <th>Reviewed By</th>
+                                    <th>Review Date</th>
+                                }
+                                @if (Model.ActiveTab == "Pending")
+                                {
+                                    <th>Actions</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var req in Model.Requests)
+                            {
+                                <tr>
+                                    <td><strong>@req.FullName</strong></td>
+                                    <td>@req.Email</td>
+                                    <td>@(req.Speciality ?? "—")</td>
+                                    <td>
+                                        <span title="@req.Justification" style="display: inline-block; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            @(req.Justification ?? "—")
+                                        </span>
+                                    </td>
+                                    <td>@req.RequestDate.ToString("MM/dd/yyyy")</td>
+                                    <td>
+                                        @if (req.Status == "Pending")
+                                        {
+                                            <span class="badge" style="background-color: #ffc107; color: #000;">Pending</span>
+                                        }
+                                        else if (req.Status == "Approved")
+                                        {
+                                            <span class="badge" style="background-color: #28a745; color: white;">Approved</span>
+                                        }
+                                        else if (req.Status == "Denied")
+                                        {
+                                            <span class="badge" style="background-color: #dc3545; color: white;">Denied</span>
+                                        }
+                                    </td>
+                                    @if (Model.ActiveTab != "Pending")
+                                    {
+                                        <td>@(req.ReviewedBy ?? "—")</td>
+                                        <td>@(req.ReviewDate.HasValue? req.ReviewDate.Value.ToString("MM/dd/yyyy") : "—")</td>
+                                    }
+                                    @if (Model.ActiveTab == "Pending")
+                                    {
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <form method="post" asp-page-handler="Approve" class="approve-form" data-name="@req.FullName">
+                                                    <input type="hidden" name="requestId" value="@req.RequestID" />
+                                                    <button type="button" class="btn btn-sm approve-btn"
+                                                            style="background-color:#28a745;color:white;width:35px;height:35px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;"
+                                                            title="Approve @req.FullName">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                                <form method="post" asp-page-handler="Deny" class="deny-form" data-name="@req.FullName">
+                                                    <input type="hidden" name="requestId" value="@req.RequestID" />
+                                                    <button type="button" class="btn btn-sm deny-btn"
+                                                            style="background-color:#dc3545;color:white;width:35px;height:35px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;"
+                                                            title="Deny @req.FullName">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-person-plus" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="text-muted mt-3">No @Model.ActiveTab.ToLower() instructor requests.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle approve button clicks
+            document.querySelectorAll('.approve-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('.approve-form');
+                    const name = form.dataset.name;
+                    
+                    if (confirm(`Approve ${name} as an Instructor?`)) {
+                        form.submit();
+                    }
+                });
+            });
+
+            // Handle deny button clicks
+            document.querySelectorAll('.deny-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const form = this.closest('.deny-form');
+                    const name = form.dataset.name;
+                    
+                    if (confirm(`Deny ${name}'s instructor request?`)) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}

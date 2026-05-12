@@ -1,0 +1,72 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Session.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2024_Group2_Session[0].ServiceID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2024_Group2_Session[0].ServiceName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2024_Group2_Session[0].SectionID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2024_Group2_Session[0].MeetingDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2024_Group2_Session[0].StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2024_Group2_Session[0].EndTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2024_Group2_Session[0].Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Spring2024_Group2_Session) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SectionID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MeetingDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.SessionID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.SessionID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.SessionID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

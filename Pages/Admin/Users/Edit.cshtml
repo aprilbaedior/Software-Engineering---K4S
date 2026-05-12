@@ -1,0 +1,583 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Admin.Users.EditModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-pencil-square"></i> Edit User
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-page="/Admin/Users/Index">All Users</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit: @Model.Input.Email</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Profile Type Indicator -->
+    @if (Model.ProfileType != "None")
+    {
+        <div class="alert alert-info mb-4">
+            <i class="bi bi-info-circle-fill"></i> 
+            <strong>Profile Type:</strong> 
+            @if (Model.ProfileType == "Student")
+            {
+                <span class="badge bg-success">Student Profile</span>
+                <span class="ms-2">This user has a student registration profile.</span>
+            }
+            else if (Model.ProfileType == "Employee")
+            {
+                <span class="badge bg-primary">Employee Application</span>
+                <span class="ms-2">This user has a faculty/staff application.</span>
+            }
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-12">
+            <!-- Tabs Navigation -->
+            <ul class="nav nav-tabs" id="userEditTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab">
+                        <i class="bi bi-person-circle"></i> Account & Roles
+                    </button>
+                </li>
+                @if (Model.ProfileType == "Student" && Model.ProfileInput != null)
+                {
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">
+                            <i class="bi bi-file-person"></i> Student Profile
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="emergency-tab" data-bs-toggle="tab" data-bs-target="#emergency" type="button" role="tab">
+                            <i class="bi bi-telephone-fill"></i> Emergency Contacts
+                        </button>
+                    </li>
+                }
+                @if (Model.ProfileType == "Employee" && Model.EmployeeInput != null)
+                {
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="employee-tab" data-bs-toggle="tab" data-bs-target="#employee" type="button" role="tab">
+                            <i class="bi bi-briefcase"></i> Employee Application
+                        </button>
+                    </li>
+                }
+            </ul>
+
+            <!-- Tabs Content -->
+            <div class="tab-content border border-top-0 p-4" id="userEditTabsContent">
+                
+                <!-- ACCOUNT & ROLES TAB -->
+                <div class="tab-pane fade show active" id="account" role="tabpanel">
+                    <form method="post">
+                        <input type="hidden" asp-for="Input.Id" />
+                        <input type="hidden" asp-for="Input.ProfileType" value="@Model.ProfileType" />
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3"><i class="bi bi-person"></i> Account Information</h5>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="Input.Email" class="form-label">Email</label>
+                                    <input asp-for="Input.Email" class="form-control" readonly />
+                                    <small class="text-muted">Email cannot be changed.</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Input.UserName" class="form-label">Username</label>
+                                    <input asp-for="Input.UserName" class="form-control" readonly />
+                                    <small class="text-muted">Username cannot be changed.</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Input.PhoneNumber" class="form-label">Phone Number</label>
+                                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Optional" />
+                                </div>
+
+                                <div class="mb-3 form-check">
+                                    <input asp-for="Input.EmailConfirmed" class="form-check-input" type="checkbox" />
+                                    <label asp-for="Input.EmailConfirmed" class="form-check-label">
+                                        Email Confirmed
+                                    </label>
+                                    <div class="form-text">Check to manually confirm the user's email.</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5 class="mb-3"><i class="bi bi-shield-check"></i> Role Assignments</h5>
+                                
+                                @if (Model.AllRoles.Any())
+                                {
+                                    @foreach (var role in Model.AllRoles)
+                                    {
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   name="Input.SelectedRoles" 
+                                                   value="@role.RoleName" 
+                                                   id="role_@role.RoleName"
+                                                   checked="@role.IsSelected" />
+                                            <label class="form-check-label" for="role_@role.RoleName">
+                                                <span class="badge bg-@GetRoleBadgeColor(role.RoleName) me-1">
+                                                    @role.RoleName
+                                                </span>
+                                                - @GetRoleDescription(role.RoleName)
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="text-muted">No roles available.</p>
+                                }
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Password Reset Section -->
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title text-danger"><i class="bi bi-key-fill"></i> Reset Password</h5>
+                                <p class="card-text">Set a new password for this user. The user will be able to log in immediately with the new password.</p>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <input type="password" id="newPassword" class="form-control" placeholder="New Password (min 6 characters)" />
+                                            <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">
+                                                <i class="bi bi-eye" id="toggleIcon"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-danger" onclick="resetPassword()">
+                                            <i class="bi bi-shield-lock"></i> Reset Password
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-page="/Admin/Users/Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Hidden form for password reset -->
+                    <form id="resetPasswordForm" method="post" asp-page-handler="ResetPassword" style="display: none;">
+                        <input type="hidden" name="userId" value="@Model.Input.Id" />
+                        <input type="hidden" id="newPasswordField" name="newPassword" />
+                    </form>
+                </div>
+
+                <!-- STUDENT PROFILE TAB -->
+                @if (Model.ProfileType == "Student" && Model.ProfileInput != null)
+                {
+                    <div class="tab-pane fade" id="profile" role="tabpanel">
+                        <form method="post">
+                            <input type="hidden" asp-for="Input.Id" />
+                            <input type="hidden" asp-for="Input.ProfileType" value="Student" />
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 class="mb-3"><i class="bi bi-person-vcard"></i> Basic Information</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.Name" class="form-label">Full Name</label>
+                                        <input asp-for="ProfileInput.Name" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.PhoneNum" class="form-label">Phone Number</label>
+                                        <input asp-for="ProfileInput.PhoneNum" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.Address" class="form-label">Home Address</label>
+                                        <textarea asp-for="ProfileInput.Address" class="form-control" rows="2"></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.DateOfBirth" class="form-label">Date of Birth</label>
+                                        <input asp-for="ProfileInput.DateOfBirth" type="date" class="form-control" />
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.Sex" class="form-label">Sex</label>
+                                            <select asp-for="ProfileInput.Sex" class="form-select">
+                                                <option value="">Select...</option>
+                                                <option value="M">Male</option>
+                                                <option value="F">Female</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.Race" class="form-label">Race/Ethnicity</label>
+                                            <input asp-for="ProfileInput.Race" class="form-control" />
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.ApplicationStatus" class="form-label">Application Status</label>
+                                        <select asp-for="ProfileInput.ApplicationStatus" class="form-select">
+                                            <option value="Pending">Pending</option>
+                                            <option value="Approved">Approved</option>
+                                            <option value="Denied">Denied</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h5 class="mb-3"><i class="bi bi-people"></i> Guardian Information</h5>
+                                    
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" 
+                                               name="ProfileInput.Under18" 
+                                               id="ProfileInput_Under18"
+                                               class="form-check-input" 
+                                               value="Y" 
+                                               checked="@(Model.ProfileInput?.Under18 == 'Y')" />
+                                        <label for="ProfileInput_Under18" class="form-check-label">
+                                            Under 18 Years Old
+                                        </label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.PGName" class="form-label">Parent/Guardian Name</label>
+                                        <input asp-for="ProfileInput.PGName" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.HomePhone" class="form-label">Guardian Home Phone</label>
+                                        <input asp-for="ProfileInput.HomePhone" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.AltPhone" class="form-label">Guardian Mobile Phone</label>
+                                        <input asp-for="ProfileInput.AltPhone" class="form-control" />
+                                    </div>
+
+                                    <h5 class="mb-3 mt-4"><i class="bi bi-building"></i> School/Work Information</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.SchoolName" class="form-label">School Name</label>
+                                        <input asp-for="ProfileInput.SchoolName" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.Grade" class="form-label">Grade</label>
+                                        <input asp-for="ProfileInput.Grade" type="number" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="ProfileInput.BusinessName" class="form-label">Employer/Business Name</label>
+                                        <input asp-for="ProfileInput.BusinessName" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <div class="d-flex justify-content-between">
+                                <a asp-page="/Admin/Users/Index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Back to List
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- EMERGENCY CONTACTS TAB -->
+                    <div class="tab-pane fade" id="emergency" role="tabpanel">
+                        <form method="post">
+                            <input type="hidden" asp-for="Input.Id" />
+                            <input type="hidden" asp-for="Input.ProfileType" value="Student" />
+                            
+                            <h5 class="mb-4"><i class="bi bi-exclamation-triangle-fill text-danger"></i> Emergency Contact Information</h5>
+
+                            <!-- Emergency Contact 1 -->
+                            <div class="card mb-3">
+                                <div class="card-header bg-danger text-white">
+                                    <strong>Primary Emergency Contact</strong>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerName" class="form-label">Name</label>
+                                            <input asp-for="ProfileInput.EmerName" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerRelation" class="form-label">Relationship</label>
+                                            <input asp-for="ProfileInput.EmerRelation" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerPhoneNum1" class="form-label">Phone Number</label>
+                                            <input asp-for="ProfileInput.EmerPhoneNum1" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerAddress" class="form-label">Address</label>
+                                            <input asp-for="ProfileInput.EmerAddress" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Emergency Contact 2 -->
+                            <div class="card mb-3">
+                                <div class="card-header bg-warning">
+                                    <strong>Secondary Emergency Contact</strong>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerName2" class="form-label">Name</label>
+                                            <input asp-for="ProfileInput.EmerName2" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerRelation2" class="form-label">Relationship</label>
+                                            <input asp-for="ProfileInput.EmerRelation2" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerPhoneNum2" class="form-label">Phone Number</label>
+                                            <input asp-for="ProfileInput.EmerPhoneNum2" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerAddress2" class="form-label">Address</label>
+                                            <input asp-for="ProfileInput.EmerAddress2" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Emergency Contact 3 -->
+                            <div class="card mb-3">
+                                <div class="card-header bg-info text-white">
+                                    <strong>Tertiary Emergency Contact</strong>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerName3" class="form-label">Name</label>
+                                            <input asp-for="ProfileInput.EmerName3" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerRelation3" class="form-label">Relationship</label>
+                                            <input asp-for="ProfileInput.EmerRelation3" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerPhoneNum3" class="form-label">Phone Number</label>
+                                            <input asp-for="ProfileInput.EmerPhoneNum3" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label asp-for="ProfileInput.EmerAddress3" class="form-label">Address</label>
+                                            <input asp-for="ProfileInput.EmerAddress3" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <div class="d-flex justify-content-between">
+                                <a asp-page="/Admin/Users/Index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Back to List
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                }
+
+                <!-- EMPLOYEE APPLICATION TAB -->
+                @if (Model.ProfileType == "Employee" && Model.EmployeeInput != null)
+                {
+                    <div class="tab-pane fade" id="employee" role="tabpanel">
+                        <form method="post">
+                            <input type="hidden" asp-for="Input.Id" />
+                            <input type="hidden" asp-for="Input.ProfileType" value="Employee" />
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 class="mb-3"><i class="bi bi-person-badge"></i> Employee Information</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.FullName" class="form-label">Full Name</label>
+                                        <input asp-for="EmployeeInput.FullName" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.PhoneNumber" class="form-label">Phone Number</label>
+                                        <input asp-for="EmployeeInput.PhoneNumber" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.Address" class="form-label">Address</label>
+                                        <textarea asp-for="EmployeeInput.Address" class="form-control" rows="2"></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.DateOfBirth" class="form-label">Date of Birth</label>
+                                        <input asp-for="EmployeeInput.DateOfBirth" type="date" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.DesiredPosition" class="form-label">Position</label>
+                                        <select asp-for="EmployeeInput.DesiredPosition" class="form-select">
+                                            <option value="Instructor">Instructor</option>
+                                            <option value="Manager">Manager</option>
+                                            <option value="Administrator">Administrator</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Application Date</label>
+                                        <input type="text" class="form-control" value="@Model.EmployeeInput.ApplicationDate.ToString("MM/dd/yyyy")" readonly />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h5 class="mb-3"><i class="bi bi-star"></i> Qualifications & Experience</h5>
+                                    
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.Qualifications" class="form-label">Qualifications</label>
+                                        <textarea asp-for="EmployeeInput.Qualifications" class="form-control" rows="3"></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.Motivation" class="form-label">Motivation</label>
+                                        <textarea asp-for="EmployeeInput.Motivation" class="form-control" rows="3"></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.Specialties" class="form-label">Specialties/Areas of Expertise</label>
+                                        <input asp-for="EmployeeInput.Specialties" class="form-control" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.ApplicationStatus" class="form-label">Application Status</label>
+                                        <select asp-for="EmployeeInput.ApplicationStatus" class="form-select">
+                                            <option value="Pending">Pending</option>
+                                            <option value="Approved">Approved</option>
+                                            <option value="Denied">Denied</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="EmployeeInput.ReviewNotes" class="form-label">Admin Review Notes</label>
+                                        <textarea asp-for="EmployeeInput.ReviewNotes" class="form-control" rows="3" placeholder="Internal notes about this application..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+
+                            <div class="d-flex justify-content-between">
+                                <a asp-page="/Admin/Users/Index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Back to List
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('newPassword');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+
+        function resetPassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            
+            if (!newPassword || newPassword.length < 6) {
+                alert('Please enter a password with at least 6 characters.');
+                return;
+            }
+
+            if (confirm('Are you sure you want to reset this user\'s password?')) {
+                document.getElementById('newPasswordField').value = newPassword;
+                document.getElementById('resetPasswordForm').submit();
+            }
+        }
+    </script>
+}
+
+@functions {
+    private string GetRoleBadgeColor(string role)
+    {
+        return role switch
+        {
+            "Admin" => "danger",
+            "SuperAdmin" => "dark",
+            "Manager" => "primary",
+            "Instructor" => "info",
+            "Student" => "success",
+            _ => "secondary"
+        };
+    }
+
+    private string GetRoleDescription(string role)
+    {
+        return role switch
+        {
+            "Admin" => "Full administrative access",
+            "SuperAdmin" => "Highest level system access",
+            "Manager" => "Manages students, instructors, and services",
+            "Instructor" => "Teaches sections and manages attendance",
+            "Student" => "Enrolled in program services",
+            _ => "Custom role"
+        };
+    }
+}

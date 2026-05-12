@@ -1,0 +1,54 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages_Certificates.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Spring2026_Group1_Certificate</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Spring2026_Group1_Certificate.CertificateID" />
+            <div class="form-group">
+<span class="text-danger">*</span>
+                <label asp-for="Spring2026_Group1_Certificate.IssuedDate" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Certificate.IssuedDate" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Spring2026_Group1_Certificate.IssuedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Certificate.CertificateStatus" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Certificate.CertificateStatus" class="form-control" />
+                <span asp-validation-for="Spring2026_Group1_Certificate.CertificateStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+<span class="text-danger">*</span>
+                <label asp-for="Spring2026_Group1_Certificate.StudentID" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Certificate.StudentID" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Spring2026_Group1_Certificate.StudentID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Certificate.ManagerID" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Certificate.ManagerID" class="form-control" />
+                <span asp-validation-for="Spring2026_Group1_Certificate.ManagerID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+<span class="text-danger">*</span>
+                <label asp-for="Spring2026_Group1_Certificate.ServiceID" class="control-label"></label>
+                <input asp-for="Spring2026_Group1_Certificate.ServiceID" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Spring2026_Group1_Certificate.ServiceID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>

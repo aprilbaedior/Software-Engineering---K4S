@@ -1,0 +1,95 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Students.MyCertificatesModel
+@{
+    ViewData["Title"] = "My Certificates";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-award me-2"></i> My Certificates
+            </h1>
+            <p class="text-muted mt-1">Certificates you have earned through K4S programs.</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Certificates.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-award" style="font-size: 3.5rem; color: #ccc;"></i>
+                <h5 class="mt-3 text-muted">No Certificates Yet</h5>
+                <p class="text-muted">You haven't earned any certificates yet. Complete a program to receive one!</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Stats -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div style="font-size: 2rem; font-weight: 700; color: #4F0C28;">@Model.Certificates.Count</div>
+                        <div class="text-muted">Total Certificates</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificates Grid -->
+        <div class="row g-4">
+            @foreach (var cert in Model.Certificates)
+            {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm" style="border-top: 4px solid #4F0C28; border-radius: 10px;">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex align-items-center mb-3">
+                            <div style="width:48px;height:48px;background:#4F0C28;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <i class="fas fa-award" style="color:#C5D2F8;font-size:1.3rem;"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-0" style="color:#4F0C28;font-weight:700;">@cert.ServiceName</h5>
+                                <small class="text-muted">Certificate #@cert.CertificateID</small>
+                            </div>
+                        </div>
+                        <dl class="row small mb-3 flex-grow-1">
+                            <dt class="col-5 text-muted">Issued Date</dt>
+                            <dd class="col-7">@cert.IssuedDate.ToString("MMMM dd, yyyy")</dd>
+                            <dt class="col-5 text-muted">Section</dt>
+                            <dd class="col-7">Section #@cert.SectionID</dd>
+                            <dt class="col-5 text-muted">Status</dt>
+                            <dd class="col-7">
+                                <span class="badge" style="background-color:#198754;color:white;">
+                                    @(cert.CertificateStatus ?? "Issued")
+                                </span>
+                            </dd>
+                        </dl>
+                        <div class="d-flex gap-2 mt-auto">
+                            <a href="/Managers/Certificates/Certificate?id=@cert.CertificateID"
+                               class="btn btn-sm flex-fill" style="background-color:#C5D2F8;color:#4F0C28;font-weight:600;" target="_blank">
+                                <i class="fas fa-scroll me-1"></i> View
+                            </a>
+                            <a href="/Managers/Certificates/Certificate?id=@cert.CertificateID&autoprint=true"
+                               class="btn btn-sm flex-fill" style="background-color:#4F0C28;color:white;font-weight:600;" target="_blank">
+                                <i class="fas fa-print me-1"></i> Print
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    }
+</div>

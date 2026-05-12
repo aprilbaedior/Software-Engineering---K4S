@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "CS395SI_Spring2023_Group1 (HTTPS)",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "C:\\Users\\mrsap\\source\\repos\\CS395SI_Spring2026Group1\\CS395SI_Spring2023_Group1.csproj", "--launch-profile", "CS395SI_Spring2023_Group1"],
+      "port": 7200
+    },
+    {
+      "name": "CS395SI_Spring2023_Group1 (HTTP)",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "C:\\Users\\mrsap\\source\\repos\\CS395SI_Spring2026Group1\\CS395SI_Spring2023_Group1.csproj", "--launch-profile", "CS395SI_Spring2023_Group1"],
+      "port": 5200
+    }
+  ]
+}

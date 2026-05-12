@@ -1,0 +1,96 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.InstructorSections.IndexModel
+@{
+    ViewData["Title"] = "My Assigned Sections";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-people"></i> My Assigned Sections</h2>
+    <p class="text-muted">Select a section to manage attendance or view details:</p>
+
+    @if (Model.AssignedSections == null || !Model.AssignedSections.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> You currently have no sections assigned.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model.AssignedSections)
+            {
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">@item.ServiceName</h5>
+                                <small class="text-muted">ID: @item.SectionID</small>
+                            </div>
+
+                            <p class="card-text mb-2">
+                                <strong>Service ID:</strong> @item.ServiceID<br />
+                                <strong>Days:</strong>
+                                @if (!string.IsNullOrEmpty(item.WeekDay))
+                                {
+                                    foreach (var day in item.WeekDay.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        <span class="badge bg-light text-dark me-1">@day.Trim()</span>
+                                    }
+                                }
+                                else { <span class="text-muted">TBD</span> }
+                                <br />
+                                <strong>Time:</strong>
+                                @if (item.StartTime.HasValue && item.EndTime.HasValue)
+                                {
+                                    <text>@DateTime.Today.Add(item.StartTime.Value).ToString("hh:mm tt") - @DateTime.Today.Add(item.EndTime.Value).ToString("hh:mm tt")</text>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">TBD</span>
+                                }
+                                <br />
+                                <strong>Date Range:</strong>
+                                @if (item.StartDate.HasValue && item.EndDate.HasValue)
+                                {
+                                    <text>@item.StartDate.Value.ToShortDateString() - @item.EndDate.Value.ToShortDateString()</text>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">TBD</span>
+                                }
+                                <br />
+                                <strong>Capacity:</strong> @item.Capacity
+                            </p>
+
+                            <div class="mt-auto">
+                                @if (item.Status == "Active")
+                                {
+                                    <span class="badge bg-success mb-2">@item.Status</span>
+                                }
+                                else if (item.Status == "Open")
+                                {
+                                    <span class="badge bg-info mb-2">@item.Status</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary mb-2">@item.Status</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="d-grid gap-2">
+                                <a asp-page="/AttendanceForAdmin/Index" asp-route-sectionID="@item.SectionID" class="btn btn-success">
+                                    <i class="bi bi-clipboard-check"></i> Attendance
+                                </a>
+                                <a asp-page="/Sections/Details" asp-route-id="@item.SectionID" class="btn btn-secondary">
+                                    <i class="bi bi-info-circle"></i> Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

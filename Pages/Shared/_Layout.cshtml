@@ -1,0 +1,192 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Krumpin 4 Success</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/CS395SI_Spring2023_Group1.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-page="/Index" style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.75rem; font-weight: 700; letter-spacing: 2px;">
+                    K4S
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @* ROLE-LESS USERS *@
+                            if (!User.IsInRole("Student") && !User.IsInRole("Instructor") && !User.IsInRole("Manager") && !User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Scheduling/Registration/Status">
+                                        <i class="bi bi-hourglass-split"></i> Check Status
+                                    </a>
+                                </li>
+                            }
+
+                            @* STUDENT MENU *@
+                            if (User.IsInRole("Student"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-person-circle"></i> My Services
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-page="/StudentSchedule/AvailableService"><i class="bi bi-list-ul"></i> Browse Services</a></li>
+                                        <li><a class="dropdown-item" asp-page="/MySchedules/Index"><i class="bi bi-calendar-check"></i> My Schedule &amp; Attendance</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Strikes/Index"><i class="bi bi-exclamation-triangle"></i> My Strikes</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Students/MyCertificates"><i class="bi bi-award"></i> My Certificates</a></li>
+                                    </ul>
+                                </li>
+                            }
+
+                            @* INSTRUCTOR MENU *@
+                            if (User.IsInRole("Instructor"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-person-badge"></i> Instructor
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-page="/InstructorSections/Index"><i class="bi bi-book"></i> My Sections</a></li>
+                                        <li><a class="dropdown-item" asp-page="/AttendanceForAdmin/SelectSection"><i class="bi bi-check2-square"></i> Take Attendance</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Instructors/SelectSection"><i class="bi bi-telephone"></i> Emergency Contacts</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-page="/Strikes/Create"><i class="bi bi-flag"></i> File Strike</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Strikes/Index"><i class="bi bi-list-check"></i> View Strikes</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Instructors/DisplinaryHistory"><i class="bi bi-journal-text"></i> Disciplinary History</a></li>
+                                    </ul>
+                                </li>
+                            }
+
+                            @* MANAGER MENU *@
+                            if (User.IsInRole("Manager"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-briefcase"></i> Manager
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><h6 class="dropdown-header">Students</h6></li>
+                                        <li><a class="dropdown-item" asp-page="/Managers/Students/Index"><i class="bi bi-people"></i> All Students</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Managers/Students/Applications"><i class="bi bi-file-earmark-text"></i> Applications</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><h6 class="dropdown-header">Staff Management</h6></li>
+                                        @*<li><a class="dropdown-item" asp-page="/Managers/InstructorRequest"><i class="bi bi-person-check"></i> Instructor Requests</a></li>*@ <!--allow this to be for instructors requesting a section?-->
+                                        <li><a class="dropdown-item" asp-page="/Managers/Instructors/Index"><i class="bi bi-person-badge"></i> All Instructors</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Managers/FacultyApplications"><i class="bi bi-person-check"></i> Instructor Applications</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Managers/InstructorAssignments"><i class="bi bi-person-workspace"></i> Assign Sections</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><h6 class="dropdown-header">Services & Attendance</h6></li>
+                                        <li><a class="dropdown-item" asp-page="/ServicesForAdmin/Index"><i class="bi bi-grid"></i> Manage Services</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Sections/Index"><i class="bi bi-calendar3"></i> Manage Sections</a></li>
+                                        <li><a class="dropdown-item" asp-page="/AttendanceForAdmin/Overview"><i class="bi bi-clipboard-data"></i> Attendance Overview</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><h6 class="dropdown-header">Conduct & Certificates</h6></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/EmergencyContacts/Index"><i class="bi bi-telephone-fill"></i> Emergency Contacts</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Strikes/Index"><i class="bi bi-shield-check"></i> Review Strikes</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Managers/Certificates/Issue"><i class="bi bi-award"></i> Issue Certificate</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Managers/Certificates/Index"><i class="bi bi-file-earmark-ruled"></i> View Certificates</a></li>
+                                    </ul>
+                                </li>
+                            }
+
+                            @* ADMIN MENU (independent so markup parses correctly) *@
+                            if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-gear-fill"></i> Admin
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><h6 class="dropdown-header">System Administration</h6></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/Users/Index"><i class="bi bi-people-fill"></i> Users & Roles</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><h6 class="dropdown-header">Program Oversight</h6></li>
+                                        <li><a class="dropdown-item" asp-page="/AttendanceForAdmin/Overview"><i class="bi bi-clipboard-data"></i> Attendance Overview</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/Reports/Index"><i class="bi bi-bar-chart-line-fill"></i> Reports & Analytics</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><h6 class="dropdown-header">Quick Access</h6></li>
+                                        <li><a class="dropdown-item" asp-page="/Admin/EmergencyContacts/Index"><i class="bi bi-telephone-fill"></i> Emergency Contacts</a></li>
+                                        <li><a class="dropdown-item" asp-page="/ServicesForAdmin/Index"><i class="bi bi-grid"></i> Services</a></li>
+                                        <li><a class="dropdown-item" asp-page="/Sections/Index"><i class="bi bi-calendar3"></i> Sections</a></li>
+                                    </ul>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-page="/Index">Home</a>
+                            </li>
+                        }
+                    </ul>
+
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer mt-auto py-3">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>K4S</h5>
+                    <p><strong>Krumpin 4 Success</strong></p>
+                    <p>Empowering youth through creative programming, academic support, and career-focused services.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h6>Quick Links</h6>
+                    <a href="#" class="footer-link">About Us</a> |
+                    <a href="#" class="footer-link">Meet The Team</a> |
+                    <a href="#" class="footer-link">Contact Us</a> |
+                    <a href="#" class="footer-link">Accessibility</a>
+                </div>
+                <div class="col-md-4 text-end">
+                    <h6>Connect With Us</h6>
+                    <a href="#" class="footer-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="footer-icon"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="footer-icon"><i class="bi bi-twitter-x"></i></a>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255,255,255,0.1);" />
+            <div class="text-center">
+                <p class="mb-0">
+                    &copy; 2024 Krumpin 4 Success. All rights reserved. |
+                    <a href="#" class="footer-link">Privacy Policy</a> |
+                    <a href="#" class="footer-link">Terms of Service</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

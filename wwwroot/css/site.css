@@ -1,0 +1,808 @@
+/* ===================================
+   Krumpin 4 Success - Updated Colors
+   NEW Color Scheme:
+   - Dark Plum: #4F0C28
+   - Periwinkle: #C5D2F8
+   - Light Grey: #F5F5F5
+   =================================== */
+
+/* Variables - UPDATED COLORS */
+:root {
+    /* NEW K4S COLORS */
+    --k4s-dark-plum: #4F0C28;
+    --k4s-periwinkle: #C5D2F8;
+    --k4s-periwinkle-dark: #a8b8e5;
+    --k4s-plum-hover: #3d0a1f;
+    /* Keep these as-is */
+    --danger: #a83232;
+    --danger-dark: #8c2b2b;
+    --gray: #6c757d;
+    --light-gray: #F5F5F5;
+    --white: #fff;
+    --black: #1b1b1b;
+}
+
+/* Base Styles */
+html {
+    font-size: 20px;
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background-color: var(--light-gray);
+    color: var(--black);
+}
+
+h2 {
+    font-size: 20px;
+}
+
+.fontColorBlue {
+    color: var(--k4s-dark-plum);
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-nav .nav-link {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+
+        .form-nav .nav-link i {
+            margin-right: 3px;
+        }
+}
+
+/* ===== NAVIGATION - UPDATED ===== */
+.navbar {
+    background-color: var(--k4s-dark-plum) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    color: var(--white) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+    .navbar-brand:hover {
+        color: var(--k4s-periwinkle) !important;
+    }
+
+.nav-item {
+    font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+    color: var(--white) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active {
+        background-color: rgba(197, 210, 248, 0.2);
+        color: var(--k4s-periwinkle) !important;
+    }
+
+.navbar-nav > li:hover {
+    background-color: var(--k4s-plum-hover);
+}
+
+.navbar-nav .dropdown-menu {
+    background-color: var(--white);
+    border: 1px solid var(--light-gray);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-nav .dropdown-item {
+    color: var(--black);
+    padding: 0.75rem 1.5rem;
+    transition: background-color 0.2s ease;
+}
+
+    .navbar-nav .dropdown-item:hover {
+        background-color: var(--k4s-periwinkle);
+        color: var(--k4s-dark-plum);
+    }
+
+.navbar-nav .dropdown-header {
+    color: var(--k4s-dark-plum);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+/* ===== TABLES - UPDATED ===== */
+.table {
+    background-color: var(--white);
+    border-radius: 8px;
+}
+
+    .table thead {
+        background-color: var(--k4s-dark-plum);
+        color: var(--white);
+    }
+
+        .table thead th {
+            font-weight: 700;
+            padding: 1rem;
+            border: none;
+        }
+
+tbody, thead {
+    color: var(--black);
+}
+
+    tbody tr:nth-child(odd) {
+        background-color: var(--light-gray);
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: var(--white);
+    }
+
+.table tbody tr:hover {
+    background-color: rgba(197, 210, 248, 0.1);
+}
+
+/* Status Indicators - UPDATED */
+.status-badge {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.approved {
+    background-color: #28a745;
+    color: var(--white);
+}
+
+.pending {
+    background-color: var(--k4s-periwinkle);
+    color: var(--k4s-dark-plum);
+    border: 2px solid var(--k4s-periwinkle-dark);
+}
+
+.denied {
+    background-color: var(--danger);
+    color: var(--white);
+}
+
+/* Attendance Status */
+.status-dropdown {
+    width: 100%;
+    padding: 5px;
+    border: 2px solid var(--light-gray);
+    border-radius: 6px;
+}
+
+    .status-dropdown option[value="Present"] {
+        background-color: green;
+        color: var(--white);
+    }
+
+    .status-dropdown option[value="Late"] {
+        background-color: yellow;
+        color: var(--black);
+    }
+
+    .status-dropdown option[value="Excused"] {
+        background-color: grey;
+        color: var(--white);
+    }
+
+    .status-dropdown option[value="Absent"] {
+        background-color: red;
+        color: var(--white);
+    }
+
+.status-present {
+    background-color: green !important;
+    color: var(--white);
+}
+
+.status-late {
+    background-color: yellow;
+    color: var(--black);
+}
+
+.status-excused {
+    background-color: grey;
+    color: var(--white);
+}
+
+.status-absent {
+    background-color: red;
+    color: var(--white);
+}
+
+/* ===== BUTTONS - UPDATED ===== */
+.btn-primary,
+.bg-primary {
+    background-color: var(--k4s-dark-plum) !important;
+    border-color: var(--k4s-dark-plum) !important;
+    color: var(--white) !important;
+    font-weight: 600;
+    padding: 0.625rem 1.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: var(--k4s-plum-hover) !important;
+        border-color: var(--k4s-plum-hover) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(79, 12, 40, 0.3);
+    }
+
+.btn-secondary {
+    background-color: var(--k4s-periwinkle) !important;
+    border-color: var(--k4s-periwinkle) !important;
+    color: var(--k4s-dark-plum) !important;
+    font-weight: 600;
+}
+
+    .btn-secondary:hover {
+        background-color: var(--k4s-periwinkle-dark) !important;
+        border-color: var(--k4s-periwinkle-dark) !important;
+    }
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-action {
+    background-color: var(--k4s-dark-plum);
+    color: var(--white);
+    padding: 5px 15px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    display: block;
+    width: 120px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+    .btn-action:hover {
+        background-color: var(--k4s-plum-hover);
+        transform: translateY(-2px);
+    }
+
+.btn1 {
+    border: 2px solid var(--k4s-dark-plum);
+    border-radius: 6px;
+    background-color: var(--k4s-dark-plum);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn1:hover {
+        background-color: var(--k4s-periwinkle);
+        color: var(--k4s-dark-plum);
+        border-color: var(--k4s-periwinkle);
+    }
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+    .action-buttons .btn {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 16px;
+        transition: all 0.2s ease-in-out;
+    }
+
+.edit-btn {
+    background-color: var(--gray);
+    color: var(--white);
+    border: none;
+}
+
+    .edit-btn:hover {
+        background-color: var(--k4s-periwinkle);
+        color: var(--k4s-dark-plum);
+        transform: scale(1.1);
+    }
+
+.details-btn {
+    background-color: transparent;
+    color: var(--k4s-dark-plum);
+    border: 2px solid var(--k4s-dark-plum);
+}
+
+    .details-btn:hover {
+        background-color: var(--k4s-dark-plum);
+        color: var(--white);
+        transform: scale(1.1);
+    }
+
+.delete-btn {
+    background-color: var(--danger);
+    color: var(--white);
+    border: none;
+}
+
+    .delete-btn:hover {
+        background-color: var(--danger-dark);
+        transform: scale(1.1);
+    }
+
+/* Feature Buttons */
+.sections-btn,
+.attendance-btn,
+.viewStudentSchedule-btn,
+.enrollStudent-btn {
+    background: var(--k4s-dark-plum);
+    color: var(--white);
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .sections-btn:hover,
+    .attendance-btn:hover,
+    .viewStudentSchedule-btn:hover,
+    .enrollStudent-btn:hover {
+        background: var(--k4s-periwinkle);
+        color: var(--k4s-dark-plum);
+        transform: scale(1.05);
+    }
+
+.enroll-button {
+    background-color: var(--k4s-dark-plum);
+    color: var(--white);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .enroll-button:hover {
+        background-color: var(--k4s-periwinkle);
+        color: var(--k4s-dark-plum);
+    }
+
+    .enroll-button.disabled {
+        background-color: #ccc !important;
+        color: #666;
+        cursor: not-allowed;
+    }
+
+/* ===== SEARCH - UPDATED ===== */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border: 2.5px solid var(--k4s-periwinkle);
+    border-radius: 15px;
+    width: 300px;
+    height: 40px;
+    background-color: var(--white);
+    transition: border-color 0.3s ease;
+}
+
+    .search-container:hover {
+        border: 2.5px solid var(--k4s-dark-plum);
+    }
+
+    .search-container input[type="text"] {
+        flex: 1;
+        border: none;
+        outline: none;
+        background-color: transparent;
+        font-size: 14px;
+        padding: 5px;
+        color: #333;
+    }
+
+    .search-container input::placeholder {
+        color: #999;
+        font-size: 14px;
+    }
+
+    .search-container input[type="submit"] {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        font-size: 16px;
+        color: var(--k4s-dark-plum);
+    }
+
+        .search-container input[type="submit"]:hover {
+            color: var(--k4s-periwinkle-dark);
+        }
+
+    .search-container i {
+        color: var(--k4s-periwinkle-dark);
+    }
+
+.search-button {
+    border: transparent;
+    background-color: transparent;
+    padding: 0;
+}
+
+.search-icons {
+    width: max-content;
+    white-space: nowrap;
+}
+
+/* Filter Components */
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+    .filter-dropdown select {
+        position: absolute;
+        top: 10px;
+        left: 100px;
+        z-index: 10;
+        background-color: var(--white);
+        border: 1px solid #ccc;
+        padding: 5px;
+        width: 120px;
+        border-radius: 5px;
+    }
+
+.filter-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.reset-button {
+    background: none;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+}
+
+.subOptions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* ===== FORMS - UPDATED ===== */
+#registrationFormHeaders {
+    color: var(--k4s-dark-plum);
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-top: 0.3rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--k4s-periwinkle);
+}
+
+.registrationDetails,
+.form-group {
+    color: var(--k4s-dark-plum);
+    padding-bottom: .6rem;
+}
+
+    .form-group > .btn {
+        background-color: var(--k4s-dark-plum);
+    }
+
+        .form-group > .btn:hover {
+            background-color: var(--k4s-periwinkle);
+            color: var(--k4s-dark-plum);
+        }
+
+.registeredUsers {
+    display: flex;
+    flex-direction: column;
+}
+
+.section-title {
+    color: var(--k4s-dark-plum);
+    border-bottom: 2px solid var(--k4s-periwinkle);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.form-nav .nav-link {
+    color: var(--gray);
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+    .form-nav .nav-link.active {
+        color: var(--k4s-dark-plum);
+        font-weight: 600;
+        border-bottom: 3px solid var(--k4s-dark-plum);
+    }
+
+    .form-nav .nav-link i {
+        margin-right: 5px;
+    }
+
+.form-label {
+    font-weight: 600;
+    color: var(--k4s-dark-plum);
+}
+
+.form-control,
+.form-select {
+    border: 2px solid var(--light-gray);
+    border-radius: 6px;
+    padding: 0.75rem;
+    transition: border-color 0.3s ease;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--k4s-periwinkle);
+        box-shadow: 0 0 0 0.2rem rgba(197, 210, 248, 0.25);
+        outline: none;
+    }
+
+    .form-control.is-invalid {
+        background-image: none;
+    }
+
+.form-text {
+    font-size: 0.8rem;
+    color: var(--gray);
+}
+
+/* ===== TABS - UPDATED ===== */
+.nav-tabs .nav-link {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+    .nav-tabs .nav-link.active {
+        color: var(--k4s-dark-plum);
+        border-bottom: 3px solid var(--k4s-dark-plum);
+        background-color: transparent;
+    }
+
+    .nav-tabs .nav-link:hover:not(.active) {
+        border-bottom: 3px solid var(--k4s-periwinkle);
+        color: var(--k4s-dark-plum);
+    }
+
+.tab-pane {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+    .tab-pane.show {
+        opacity: 1;
+    }
+
+/* ===== CARDS - UPDATED ===== */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+    border: none;
+    background-color: var(--white);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+.card-header {
+    background-color: var(--k4s-dark-plum);
+    color: var(--white);
+    border-bottom: none;
+    font-weight: 700;
+    padding: 1.25rem 1.5rem;
+    font-size: 1.25rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Progress Bar */
+.progress {
+    height: 12px;
+    background-color: #e9ecef;
+    border-radius: 20px;
+}
+
+.progress-bar {
+    background-color: var(--k4s-dark-plum);
+    border-radius: 20px;
+}
+
+/* ===== TEXT UTILITIES - UPDATED ===== */
+.text-primary {
+    color: var(--k4s-dark-plum) !important;
+}
+
+.text-plum {
+    color: var(--k4s-dark-plum);
+}
+
+.text-periwinkle {
+    color: var(--k4s-periwinkle-dark);
+}
+
+.text-danger {
+    font-size: 0.875rem;
+    color: var(--danger);
+}
+
+/* Badge */
+.badge {
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+}
+
+.badge-primary {
+    background-color: var(--k4s-dark-plum);
+}
+
+.badge-secondary {
+    background-color: var(--k4s-periwinkle);
+    color: var(--k4s-dark-plum);
+}
+
+/* Definition List */
+dt {
+    font-weight: 600;
+    color: #495057;
+}
+
+dd {
+    margin-bottom: 0.75rem;
+}
+
+/* ===== FOOTER - UPDATED ===== */
+.footer {
+    background-color: var(--k4s-dark-plum);
+    color: var(--white);
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+    .footer a {
+        color: var(--k4s-periwinkle);
+        text-decoration: none;
+    }
+
+        .footer a:hover {
+            color: var(--white);
+        }
+
+/* ===== ALERTS ===== */
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-info {
+    background-color: var(--k4s-periwinkle);
+    color: var(--k4s-dark-plum);
+    border-left: 4px solid var(--k4s-periwinkle-dark);
+}
+
+/* ===== LOADING OVERLAY ===== */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(79, 12, 40, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+    #loading-overlay .spinner-border {
+        width: 4rem;
+        height: 4rem;
+        color: var(--k4s-periwinkle);
+    }
+
+/* Hover Effects */
+img.icon:hover,
+i:hover {
+    color: var(--k4s-periwinkle);
+}
+
+/* Utility Classes */
+.bg-plum {
+    background-color: var(--k4s-dark-plum);
+}
+
+.bg-periwinkle {
+    background-color: var(--k4s-periwinkle);
+}
+
+.border-plum {
+    border-color: var(--k4s-dark-plum) !important;
+}
+
+.border-periwinkle {
+    border-color: var(--k4s-periwinkle) !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}

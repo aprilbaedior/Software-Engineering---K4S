@@ -1,0 +1,181 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.SectionForStudent.SectionEnrollModel
+@{
+    ViewData["Title"] = "Available Sections";
+    bool isUserApproved = ViewData["IsUserApproved"] != null && (bool)ViewData["IsUserApproved"];
+    var enrolledSections = ViewData["EnrolledSections"] as List<int> ?? new List<int>();
+    var serviceName = Model.Spring2026_Group1_Sections.FirstOrDefault()?.ServiceName ?? "Service";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    .page-header {
+        background: #f8f9fa;
+        border-left: 5px solid #0f3460;
+        padding: 1.25rem 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    .page-header h2 { font-weight: 700; margin: 0; color: #1a1a2e; }
+    .page-header p { margin: 0.25rem 0 0; color: #6c757d; font-size: 0.9rem; }
+    .table th { background-color: #f8f9fa; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: #495057; }
+    .table td { vertical-align: middle; }
+    .enroll-button {
+        border: none;
+        border-radius: 6px;
+        padding: 0.35rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+    .enroll-button:hover:not(:disabled) { opacity: 0.85; }
+    .back-btn {
+        color: #6c757d;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-bottom: 1rem;
+    }
+    .back-btn:hover { color: #0f3460; }
+</style>
+
+<a asp-page="/StudentSchedule/AvailableService" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back to Services
+</a>
+
+<div class="page-header">
+    <h2><i class="bi bi-calendar3 me-2" style="color:#0f3460"></i>Sections for @serviceName</h2>
+    <p>Select a section to enroll</p>
+</div>
+
+@if (!isUserApproved)
+{
+    <div class="alert alert-warning" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        Your application is not yet approved. You will be able to enroll in services once your application has been approved.
+    </div>
+}
+
+@if (!Model.Spring2026_Group1_Sections.Any())
+{
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-4 text-muted">
+            <i class="fas fa-calendar-times fa-2x mb-2 d-block opacity-50"></i>
+            <p>No sections are currently available for this service.</p>
+            <a asp-page="/StudentSchedule/AvailableService" class="btn btn-outline-secondary btn-sm">Browse Other Services</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>Day</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Spring2026_Group1_Sections)
+                        {
+                            bool isEnrolled = enrolledSections.Contains(item.SectionID);
+                            <tr>
+                                <td><span class="badge bg-secondary">Section #@item.SectionID</span></td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.WeekDay))
+                                    {
+                                        foreach (var day in item.WeekDay.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                                        {
+                                            <span class="badge me-1" style="background-color:#C5D2F8;color:#4F0C28;font-size:0.75rem;">@day.Trim()</span>
+                                        }
+                                    }
+                                    else { <span class="text-muted">TBD</span> }
+                                </td>
+                                <td>@(item.StartTime.HasValue ? DateTime.Today.Add(item.StartTime.Value).ToString("hh:mm tt") : "—")</td>
+                                <td>@(item.EndTime.HasValue ? DateTime.Today.Add(item.EndTime.Value).ToString("hh:mm tt") : "—")</td>
+                                <td>@item.StartDate?.ToString("MM/dd/yyyy")</td>
+                                <td>@item.EndDate?.ToString("MM/dd/yyyy")</td>
+                                <td>
+                                    @{
+                                        var statusColor = item.Status?.ToLower() switch {
+                                            "active" => "success",
+                                            "open"   => "primary",
+                                            "ended"  => "secondary",
+                                            _        => "secondary"
+                                        };
+                                    }
+                                    <span class="badge bg-@statusColor">@(item.Status ?? "Unknown")</span>
+                                </td>
+                                <td class="text-center">
+                                    <form method="post" class="enroll-form">
+                                        <input type="hidden" name="SectionID" value="@item.SectionID" />
+                                        <input type="hidden" name="ServiceID" value="@item.ServiceID" />
+                                        <input type="hidden" name="ServiceName" value="@item.ServiceName" />
+                                        <input type="hidden" name="StartDateString" value="@item.StartDate?.ToString("o")" />
+                                        <input type="hidden" name="EndDateString" value="@item.EndDate?.ToString("o")" />
+                                        <input type="hidden" name="WeekDay" value="@item.WeekDay" />
+                                        <input type="hidden" name="StartTimeString" value="@item.StartTime" />
+                                        <input type="hidden" name="EndTimeString" value="@item.EndTime" />
+                                        <button type="submit"
+                                                class="enroll-button"
+                                                style="background-color: @(isEnrolled ? "#6c757d" : (!isUserApproved ? "#adb5bd" : "#198754")); color: white;"
+                                                @(isEnrolled || !isUserApproved ? "disabled" : "")>
+                                            @(isEnrolled ? "Enrolled" : (isUserApproved ? "Enroll" : "Not Approved"))
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".enroll-form").forEach(form => {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+            let button = this.querySelector(".enroll-button");
+
+            fetch(window.location.href, {
+                method: "POST",
+                body: formData,
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    button.textContent = "Enrolled";
+                    button.disabled = true;
+                    button.style.backgroundColor = "#6c757d";
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Network error. Please try again.");
+            });
+        });
+    });
+});
+</script>
+}

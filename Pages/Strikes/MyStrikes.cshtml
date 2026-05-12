@@ -1,0 +1,169 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Strikes.MyStrikesModel
+@{
+    ViewData["Title"] = "My Strikes";
+}
+
+<div class="container mt-4">
+    <h2>My Strikes</h2>
+    <p class="text-muted">Strikes filed against you by instructors and managers.</p>
+
+    @if (Model.TotalApprovedCount > 0)
+    {
+        <div class="alert alert-warning" role="alert">
+            <strong>Warning:</strong> You currently have <strong>@Model.TotalApprovedCount approved strike(s)</strong>.
+            @if (Model.TotalApprovedCount >= 3)
+            {
+                <span class="text-danger">You have reached the strike limit and may face consequences.</span>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-success" role="alert">
+            <strong>Good standing!</strong> You have no approved strikes.
+        </div>
+    }
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="approved-tab" data-bs-toggle="tab" href="#approved" role="tab">
+                Approved (@Model.ApprovedStrikes.Count)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="pending-tab" data-bs-toggle="tab" href="#pending" role="tab">
+                Pending Review (@Model.PendingStrikes.Count)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="denied-tab" data-bs-toggle="tab" href="#denied" role="tab">
+                Denied (@Model.DeniedStrikes.Count)
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+        <!-- Approved Strikes Tab -->
+        <div class="tab-pane fade show active" id="approved" role="tabpanel">
+            @if (Model.ApprovedStrikes.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Filed Date</th>
+                                <th>Filed By</th>
+                                <th>Reason</th>
+                                <th>Review Date</th>
+                                <th>Manager Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var strike in Model.ApprovedStrikes)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-danger">#@strike.StrikeID</span>
+                                    </td>
+                                    <td>@strike.FiledDate.ToString("MM/dd/yyyy")</td>
+                                    <td>@strike.FiledBy</td>
+                                    <td>@strike.Reason</td>
+                                    <td>@(strike.ReviewDate?.ToString("MM/dd/yyyy") ?? "N/A")</td>
+                                    <td>@(strike.ManagerNotes ?? "—")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No approved strikes.</p>
+            }
+        </div>
+
+        <!-- Pending Strikes Tab -->
+        <div class="tab-pane fade" id="pending" role="tabpanel">
+            @if (Model.PendingStrikes.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Filed Date</th>
+                                <th>Filed By</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var strike in Model.PendingStrikes)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-warning text-dark">#@strike.StrikeID</span>
+                                    </td>
+                                    <td>@strike.FiledDate.ToString("MM/dd/yyyy")</td>
+                                    <td>@strike.FiledBy</td>
+                                    <td>@strike.Reason</td>
+                                    <td><span class="badge bg-warning text-dark">Pending Review</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No pending strikes.</p>
+            }
+        </div>
+
+        <!-- Denied Strikes Tab -->
+        <div class="tab-pane fade" id="denied" role="tabpanel">
+            @if (Model.DeniedStrikes.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Filed Date</th>
+                                <th>Filed By</th>
+                                <th>Reason</th>
+                                <th>Review Date</th>
+                                <th>Manager Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var strike in Model.DeniedStrikes)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-success">#@strike.StrikeID</span>
+                                    </td>
+                                    <td>@strike.FiledDate.ToString("MM/dd/yyyy")</td>
+                                    <td>@strike.FiledBy</td>
+                                    <td>@strike.Reason</td>
+                                    <td>@(strike.ReviewDate?.ToString("MM/dd/yyyy") ?? "N/A")</td>
+                                    <td>@(strike.ManagerNotes ?? "—")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No denied strikes.</p>
+            }
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-page="/Index" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>

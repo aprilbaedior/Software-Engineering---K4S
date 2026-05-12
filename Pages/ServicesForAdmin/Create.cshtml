@@ -1,0 +1,53 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.ServicesForAdmin.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create New Service</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Services.ServiceName" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Services.ServiceName" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Services.ServiceName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Services.ServiceID" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Services.ServiceID" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Services.ServiceID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Services.ServiceFrequency" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Services.ServiceFrequency" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Services.ServiceFrequency" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Services.ServiceDescription" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Services.ServiceDescription" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Services.ServiceDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Services.ServiceHours" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Services.ServiceHours" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Services.ServiceHours" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

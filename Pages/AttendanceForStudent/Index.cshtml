@@ -1,0 +1,94 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.AttendanceForStudent.IndexModel
+@{
+    ViewData["Title"] = "My Attendance";
+}
+
+<h1>@(Model.ServiceName ?? "Class Attendance")</h1>
+<p>@(Model.ScheduleTime ?? "")</p>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div>
+            <h5>@(Model.IsAdmin ? $"{Model.StudentEmail}'s Attendance Summary" : "My Attendance Summary")</h5>
+            <div class="progress mb-3" style="height: 20px;">
+                <div class="progress-bar bg-success" role="progressbar" 
+                    style="width: @Model.PersonalAttendancePercentage.ToString("F1")%;" 
+                    aria-valuenow="@Model.PersonalAttendancePercentage.ToString("F1")" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                    @Model.PersonalAttendancePercentage.ToString("F1")%
+                </div>
+            </div>
+            <p>Present: @Model.TotalSessionsPresent out of @Model.TotalSessions sessions</p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <h5>Week of @Model.WeekStart.ToString("MMM dd, yyyy")</h5>
+            <div class="btn-group" role="group">
+                <a asp-page="./Index" asp-route-id="@Model.ScheduleID" asp-route-weekOffset="@(Model.WeekOffset - 1)" class="btn btn-outline-primary">
+                    Previous Week
+                </a>
+                <a asp-page="./Index" asp-route-id="@Model.ScheduleID" asp-route-weekOffset="0" class="btn btn-outline-secondary">
+                    Current Week
+                </a>
+                <a asp-page="./Index" asp-route-id="@Model.ScheduleID" asp-route-weekOffset="@(Model.WeekOffset + 1)" class="btn btn-outline-primary">
+                    Next Week
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Day</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Model.AttendanceRecords.OrderBy(r => r.CurrentDate))
+            {
+                <tr>
+                    <td>@record.CurrentDate.ToString("MM/dd/yyyy")</td>
+                    <td>@record.CurrentDate.DayOfWeek.ToString()</td>
+                    <td>
+                        @{
+                            string statusClass = record.AttendanceStatus switch
+                            {
+                                "Present" => "text-success",
+                                "Absent" => "text-danger",
+                                "Late" => "text-warning",
+                                "Excused" => "text-info",
+                                _ => "text-secondary"
+                            };
+                        }
+                        <span class="@statusClass">@record.AttendanceStatus</span>
+                    </td>
+                </tr>
+            }
+            
+            @if (!Model.AttendanceRecords.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-center">No attendance records for this week</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-4">
+    @if (Model.IsAdmin)
+{
+    <a href="/AttendanceForAdmin?sectionID=@Model.SectionID" class="btn btn-secondary">Back to Section Attendance</a>
+}
+else
+{
+    <a asp-page="/MySchedules/Details" asp-route-id="@Model.ScheduleID" class="btn btn-secondary">Back to Service Details</a>
+}
+</div>

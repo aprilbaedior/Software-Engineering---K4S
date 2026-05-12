@@ -1,0 +1,111 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Registration.FacultyApplicationModel
+@{
+    ViewData["Title"] = "Faculty/Staff Application";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-briefcase-fill"></i> Faculty/Staff Application</h2>
+    <p class="text-muted">Please complete the following form to apply for a position with Keys 4 Success.</p>
+
+    <form method="post">
+        <div class="row">
+            <!-- Personal Information -->
+            <div class="col-md-12">
+                <h4 class="mt-3">Personal Information</h4>
+                <hr />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Application.FullName" class="form-label"></label>
+                <input asp-for="Application.FullName" class="form-control" />
+                <span asp-validation-for="Application.FullName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Application.Email" class="form-label"></label>
+                <input asp-for="Application.Email" class="form-control" readonly />
+                <span asp-validation-for="Application.Email" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Application.PhoneNumber" class="form-label"></label>
+                <input asp-for="Application.PhoneNumber" class="form-control" placeholder="(555) 123-4567" />
+                <span asp-validation-for="Application.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Application.DateOfBirth" class="form-label"></label>
+                <input asp-for="Application.DateOfBirth" class="form-control" type="date" />
+                <span asp-validation-for="Application.DateOfBirth" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label asp-for="Application.Address" class="form-label"></label>
+                <input asp-for="Application.Address" class="form-control" placeholder="123 Main St, City, State ZIP" />
+                <span asp-validation-for="Application.Address" class="text-danger"></span>
+            </div>
+
+            <!-- Position Information -->
+            <div class="col-md-12">
+                <h4 class="mt-3">Position Information</h4>
+                <hr />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Application.DesiredPosition" class="form-label"></label>
+                <select asp-for="Application.DesiredPosition" class="form-select" required>
+                    <option value="">-- Select Position --</option>
+                    <option value="Instructor">Instructor</option>
+                    <option value="Manager">Manager</option>
+                    <option value="Administrator">Administrator</option>
+                </select>
+                <span asp-validation-for="Application.DesiredPosition" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label asp-for="Application.Specialties" class="form-label"></label>
+                <input asp-for="Application.Specialties" class="form-control" 
+                       placeholder="e.g., Life Skills, Job Readiness, Computer Skills, Communication, Leadership" />
+                <small class="form-text text-muted">List any areas of expertise relevant to youth development and skills training</small>
+                <span asp-validation-for="Application.Specialties" class="text-danger"></span>
+            </div>
+
+            <!-- Professional Information -->
+            <div class="col-md-12">
+                <h4 class="mt-3">Professional Background</h4>
+                <hr />
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label asp-for="Application.Qualifications" class="form-label"></label>
+                <textarea asp-for="Application.Qualifications" class="form-control" rows="5" 
+                          placeholder="Describe your relevant experience working with youth, education background, certifications, and qualifications..."></textarea>
+                <span asp-validation-for="Application.Qualifications" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label asp-for="Application.Motivation" class="form-label"></label>
+                <textarea asp-for="Application.Motivation" class="form-control" rows="4" 
+                          placeholder="Tell us why you want to work with Keys 4 Success and help youth develop essential life skills..."></textarea>
+                <span asp-validation-for="Application.Motivation" class="text-danger"></span>
+            </div>
+
+            <!-- Optional: Background Check Consent -->
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> <strong>Note:</strong> Working with youth may require a background check as part of our hiring process.
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 mb-5">
+            <button type="submit" class="btn btn-primary btn-lg px-4">Submit Application</button>
+            <a asp-page="/Registration/RoleSelection" class="btn btn-outline-secondary px-4">Back</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

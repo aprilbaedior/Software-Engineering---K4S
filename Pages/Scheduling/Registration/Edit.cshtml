@@ -1,0 +1,224 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Registration.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<h1>Edit Account</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.Name" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.Name" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.Name" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Spring2023_Group1_Profile_Sys.Email" />
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.Password" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.Password" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.PhoneNum" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.PhoneNum" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.PhoneNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.Address" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.Address" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.LicenseNum" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.LicenseNum" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.LicenseState" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.LicenseState" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseState" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.LicenseIssue" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.LicenseIssue" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseIssue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.LicenseExp" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.LicenseExp" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseExp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.LicenseClass" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.LicenseClass" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.LicenseClass" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.Under18" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.Under18" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.Under18" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.PGName" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.PGName" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.PGName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.HomePhone" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.HomePhone" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.HomePhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.AltPhone" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.AltPhone" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.AltPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.USCitizen" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.USCitizen" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.USCitizen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.Race" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.Race" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.Race" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.Sex" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.Sex" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.Sex" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.DateOfBirth" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.DateOfBirth" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.HSGrad" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.HSGrad" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.HSGrad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.SchoolName" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.SchoolName" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.SchoolName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.SchoolAddress" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.SchoolAddress" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.SchoolAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.Grade" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.Grade" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.Grade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.Employed" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.Employed" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.Employed" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.BusinessName" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.BusinessName" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.BusinessName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.BusinessAddress" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.BusinessAddress" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.BusinessAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.BusinessPhone" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.BusinessPhone" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.BusinessPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.Talents" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.Talents" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.Talents" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerName" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerName" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerName2" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerName2" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerName2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerName3" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerName3" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerName3" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerRelation" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerRelation" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerRelation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerRelation2" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerRelation2" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerRelation2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerRelation3" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerRelation3" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerRelation3" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum1" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum1" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum2" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum2" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum3" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum3" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerPhoneNum3" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerAddress" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerAddress" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerAddress2" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerAddress2" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerAddress2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.EmerAddress3" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.EmerAddress3" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.EmerAddress3" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Spring2023_Group1_Profile_Sys.ApplicationStatus" class="control-label"></label>
+                <input asp-for="Spring2023_Group1_Profile_Sys.ApplicationStatus" class="form-control" />
+                <span asp-validation-for="Spring2023_Group1_Profile_Sys.ApplicationStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

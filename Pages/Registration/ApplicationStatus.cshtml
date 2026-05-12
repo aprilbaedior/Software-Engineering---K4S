@@ -1,0 +1,84 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Registration.ApplicationStatusModel
+@{
+    ViewData["Title"] = "Application Status";
+    var status = Model.ApplicationType == "Student" ? Model.StudentProfile?.ApplicationStatus : Model.FacultyApplication?.ApplicationStatus;
+}
+
+<div class="container mt-4">
+    <h1>@Model.ApplicationType Application Status</h1>
+
+    @if (status == "Pending")
+    {
+        <div class="alert alert-info">
+            <h4><i class="bi bi-hourglass-split"></i> Application Pending</h4>
+            <p>Your @Model.ApplicationType.ToLower() application is currently under review. 
+            @if (Model.ApplicationType == "Student")
+            {
+                <text>A manager will review your information shortly.</text>
+            }
+            else
+            {
+                <text>An administrator or manager will review your application based on your desired position.</text>
+            }
+            </p>
+        </div>
+    }
+    else if (status == "Approved")
+    {
+        <div class="alert alert-success">
+            <h4><i class="bi bi-check-circle"></i> Application Approved</h4>
+            <p>Congratulations! Your application has been approved. You now have access to the system.</p>
+        </div>
+        <a asp-page="/Index" class="btn btn-primary">Go to Dashboard</a>
+    }
+    else if (status == "Denied")
+    {
+        <div class="alert alert-danger">
+            <h4><i class="bi bi-x-circle"></i> Application Denied</h4>
+            <p>Unfortunately, your application has been denied. Please contact an administrator for more information.</p>
+            @if (Model.FacultyApplication?.ReviewNotes != null)
+            {
+                <p><strong>Notes:</strong> @Model.FacultyApplication.ReviewNotes</p>
+            }
+        </div>
+    }
+
+    <hr />
+
+    <h3>Your Application Details</h3>
+    
+    @if (Model.ApplicationType == "Student" && Model.StudentProfile != null)
+    {
+        <dl class="row">
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.StudentProfile.Name</dd>
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.StudentProfile.Email</dd>
+            <dt class="col-sm-3">Address</dt>
+            <dd class="col-sm-9">@Model.StudentProfile.Address</dd>
+            @if (!string.IsNullOrEmpty(Model.StudentProfile.PhoneNum))
+            {
+                <dt class="col-sm-3">Phone</dt>
+                <dd class="col-sm-9">@Model.StudentProfile.PhoneNum</dd>
+            }
+        </dl>
+    }
+    else if (Model.ApplicationType == "Faculty" && Model.FacultyApplication != null)
+    {
+        <dl class="row">
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.FacultyApplication.FullName</dd>
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.FacultyApplication.Email</dd>
+            <dt class="col-sm-3">Phone</dt>
+            <dd class="col-sm-9">@Model.FacultyApplication.PhoneNumber</dd>
+            <dt class="col-sm-3">Address</dt>
+            <dd class="col-sm-9">@Model.FacultyApplication.Address</dd>
+            <dt class="col-sm-3">Desired Position</dt>
+            <dd class="col-sm-9"><span class="badge bg-primary">@Model.FacultyApplication.DesiredPosition</span></dd>
+            <dt class="col-sm-3">Application Date</dt>
+            <dd class="col-sm-9">@Model.FacultyApplication.ApplicationDate.ToShortDateString()</dd>
+        </dl>
+    }
+</div>

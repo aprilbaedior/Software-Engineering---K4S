@@ -1,0 +1,294 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Admin.Users.IndexModel
+@{
+    ViewData["Title"] = "All Users & Roles";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">
+                <i class="bi bi-people-fill"></i> All Users & Roles
+            </h1>
+            <p class="lead text-muted">Manage all system users and their role assignments</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Filters Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-5">
+                    <label for="searchTerm" class="form-label">Search by Email/Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" 
+                               class="form-control" 
+                               id="searchTerm" 
+                               name="SearchTerm" 
+                               value="@Model.SearchTerm" 
+                               placeholder="Enter email or username...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="roleFilter" class="form-label">Filter by Role</label>
+                    <select class="form-select" id="roleFilter" name="RoleFilter">
+                        <option value="All" selected="@(string.IsNullOrEmpty(Model.RoleFilter) || Model.RoleFilter == "All")">All Roles</option>
+                        @foreach (var role in Model.AvailableRoles)
+                        {
+                            <option value="@role" selected="@(Model.RoleFilter == role)">@role</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-funnel"></i> Apply Filters
+                    </button>
+                    <a asp-page="/Admin/Users/Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people"></i> Total Users</h5>
+                    <h2 class="mb-0">@Model.TotalRecords</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-person-check"></i> Active Users</h5>
+                    <h2 class="mb-0">@Model.Users.Count(u => !u.IsLockedOut)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-lock-fill"></i> Locked Out</h5>
+                    <h2 class="mb-0">@Model.Users.Count(u => u.IsLockedOut)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-envelope-x"></i> Unconfirmed</h5>
+                    <h2 class="mb-0">@Model.Users.Count(u => !u.EmailConfirmed)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Showing @Model.Users.Count of @Model.TotalRecords users
+    </div>
+
+    <!-- Users Table -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-table"></i> User List</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Users.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Email</th>
+                                <th>Username</th>
+                                <th>Roles</th>
+                                <th>Status</th>
+                                <th>Email Confirmed</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr class="@(user.IsLockedOut ? "table-danger" : "")">
+                                    <td>
+                                        <i class="bi bi-envelope"></i> @user.Email
+                                    </td>
+                                    <td>@user.UserName</td>
+                                    <td>
+                                        @if (user.Roles.Any())
+                                        {
+                                            @foreach (var role in user.Roles)
+                                            {
+                                                <span class="badge bg-@GetRoleBadgeColor(role) me-1">
+                                                    <i class="bi bi-@GetRoleIcon(role)"></i> @role
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">No Roles</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.IsLockedOut)
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-lock-fill"></i> Locked Out
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-unlock-fill"></i> Active
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.EmailConfirmed)
+                                        {
+                                            <span><i class="bi bi-check-circle-fill text-success"></i> Confirmed</span>
+                                        }
+                                        else
+                                        {
+                                            <span><i class="bi bi-x-circle-fill text-warning"></i> Unconfirmed</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a asp-page="/Admin/Users/Edit" asp-route-id="@user.Id" class="btn btn-outline-primary" title="Edit User">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form method="post" asp-page-handler="ToggleLockout" asp-route-userId="@user.Id" asp-route-pageNumber="@Model.PageNumber" asp-route-searchTerm="@Model.SearchTerm" asp-route-roleFilter="@Model.RoleFilter" style="display: inline;">
+                                                <button type="submit" 
+                                                        class="btn btn-outline-@(user.IsLockedOut ? "success" : "danger")" 
+                                                        title="@(user.IsLockedOut ? "Unlock User" : "Lock User")"
+                                                        onclick="return confirm('@(user.IsLockedOut ? "Are you sure you want to unlock this user?" : "Are you sure you want to lock this user?")');">
+                                                    <i class="bi bi-@(user.IsLockedOut ? "unlock" : "lock")"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Controls -->
+                @if (Model.TotalPages > 1)
+                {
+                    <div class="card-footer">
+                        <nav aria-label="User pagination">
+                            <ul class="pagination justify-content-center mb-0">
+                                <!-- First Page -->
+                                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                                    <a class="page-link" href="?PageNumber=1&SearchTerm=@Model.SearchTerm&RoleFilter=@Model.RoleFilter">
+                                        <i class="bi bi-chevron-double-left"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Previous Page -->
+                                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                                    <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)&SearchTerm=@Model.SearchTerm&RoleFilter=@Model.RoleFilter">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Page Numbers -->
+                                @{
+                                    var startPage = Math.Max(1, Model.PageNumber - 2);
+                                    var endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+                                }
+
+                                @for (int i = startPage; i <= endPage; i++)
+                                {
+                                    <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                                        <a class="page-link" href="?PageNumber=@i&SearchTerm=@Model.SearchTerm&RoleFilter=@Model.RoleFilter">
+                                            @i
+                                        </a>
+                                    </li>
+                                }
+
+                                <!-- Next Page -->
+                                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                                    <a class="page-link" href="?PageNumber=@(Model.PageNumber + 1)&SearchTerm=@Model.SearchTerm&RoleFilter=@Model.RoleFilter">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Last Page -->
+                                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                                    <a class="page-link" href="?PageNumber=@Model.TotalPages&SearchTerm=@Model.SearchTerm&RoleFilter=@Model.RoleFilter">
+                                        <i class="bi bi-chevron-double-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        <div class="text-center text-muted mt-2">
+                            <small>Page @Model.PageNumber of @Model.TotalPages</small>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                    <p class="text-muted mt-3">No users found matching your criteria.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetRoleBadgeColor(string role)
+    {
+        return role switch
+        {
+            "Admin" => "danger",
+            "SuperAdmin" => "dark",
+            "Manager" => "primary",
+            "Instructor" => "info",
+            "Student" => "success",
+            _ => "secondary"
+        };
+    }
+
+    private string GetRoleIcon(string role)
+    {
+        return role switch
+        {
+            "Admin" => "gear-fill",
+            "SuperAdmin" => "shield-fill-check",
+            "Manager" => "briefcase-fill",
+            "Instructor" => "person-badge-fill",
+            "Student" => "mortarboard-fill",
+            _ => "person-fill"
+        };
+    }
+}

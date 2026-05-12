@@ -1,0 +1,60 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages_Instructors.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2026_Group1_Instructor[0].Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2026_Group1_Instructor[0].HireDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2026_Group1_Instructor[0].IsActive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2026_Group1_Instructor[0].EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2026_Group1_Instructor[0].Speciality)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Spring2026_Group1_Instructor) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HireDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Speciality)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.InstructorID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.InstructorID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.InstructorID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,170 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Sections.HistoryModel
+@{
+    ViewData["Title"] = "Student History";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="mb-0">Disciplinary History</h2>
+            <small class="text-muted">@Model.DisplayName (@Model.DisplayEmail)</small>
+        </div>
+        <div>
+            @if (Model.SectionID.HasValue)
+            {
+                <a asp-page="/Sections/Details" asp-route-id="@Model.SectionID" class="btn btn-outline-secondary">Back to Section</a>
+            }
+            else
+            {
+                <a asp-page="/Sections/Index" class="btn btn-outline-secondary">Back</a>
+            }
+        </div>
+    </div>
+
+    @* NEW: Basic student info + attendance summary card *@
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <strong>Student Info</strong>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <th class="w-25">Name</th>
+                            <td>@Model.DisplayName</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>@Model.DisplayEmail</td>
+                        </tr>
+                        <tr>
+                            <th>Sex</th>
+                            <td>@(string.IsNullOrWhiteSpace(Model.Sex) ? "—" : Model.Sex)</td>
+                        </tr>
+                        @if (Model.SectionID.HasValue)
+                        {
+                            <tr>
+                                <th>Section</th>
+                                <td>@Model.SectionID</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>Attendance Summary</strong>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label class="small text-muted">Present: @Model.TotalSessionsPresent of @Model.TotalSessions</label>
+                        <div class="progress" style="height:18px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 style="width: @(Model.AttendancePercentage.ToString("F1"))%;"
+                                 aria-valuenow="@(Model.AttendancePercentage.ToString("F1"))"
+                                 aria-valuemin="0" aria-valuemax="100">
+                                @(Model.AttendancePercentage.ToString("F1"))%
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="mt-3">Recent Attendance</h6>
+                    @if (Model.AttendanceRecords != null && Model.AttendanceRecords.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var a in Model.AttendanceRecords.Take(6))
+                                    {
+                                        <tr>
+                                            <td>@a.CurrentDate.ToString("yyyy-MM-dd")</td>
+                                            <td>
+                                                @{
+                                                    var cls = a.AttendanceStatus switch
+                                                    {
+                                                        "Present" => "text-success",
+                                                        "Absent" => "text-danger",
+                                                        "Late" => "text-warning",
+                                                        "Excused" => "text-info",
+                                                        _ => "text-secondary"
+                                                    };
+                                                }
+                                                <span class="@cls">@a.AttendanceStatus</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="mb-0 text-muted">No attendance records for this section.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Existing strikes UI preserved below *@
+    @if (Model.Strikes != null && Model.Strikes.Any())
+    {
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-list-check me-2"></i> @Model.DisplayName — Records
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Date</th>
+                                <th>Section</th>
+                                <th>Reason</th>
+                                <th>Filed By</th>
+                                <th>Status</th>
+                                <th>Reviewed By</th>
+                                <th>Review Date</th>
+                                <th>Manager Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in Model.Strikes)
+                            {
+                                <tr>
+                                    <td>@s.FiledDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@(s.SectionID?.ToString() ?? "—")</td>
+                                    <td style="max-width:320px;white-space:normal;">@s.Reason</td>
+                                    <td>@s.FiledBy</td>
+                                    <td>@s.ReviewStatus</td>
+                                    <td>@s.ReviewedBy</td>
+                                    <td>@(s.ReviewDate?.ToString("yyyy-MM-dd") ?? "—")</td>
+                                    <td style="max-width:300px;white-space:normal;">@s.ManagerNotes</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body">
+                <p class="mb-0">No disciplinary records found for @Model.DisplayEmail.</p>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,203 @@
+﻿@* @page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="Username" class="form-control" disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} *@
+
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "My Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<div class="container py-4">
+    <h2 class="text-primary mb-4">@ViewData["Title"]</h2>
+    <partial name="_StatusMessage" for="StatusMessage" />
+    
+    <div class="card shadow">
+        <div class="card-body">
+            <form id="profile-form" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h4 class="mb-3">Personal Information</h4>
+                        <hr />
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Username" class="form-control" disabled />
+                            <label asp-for="Username" class="form-label">Email</label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.PhoneNumber" class="form-control" />
+                            <label asp-for="Input.PhoneNumber" class="form-label">Phone Number</label>
+                            <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.FullName" class="form-control" />
+                            <label asp-for="Input.FullName" class="form-label">Full Name</label>
+                            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.DateOfBirth" class="form-control" type="date" />
+                            <label asp-for="Input.DateOfBirth" class="form-label">Date of Birth</label>
+                            <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.Address" class="form-control" />
+                            <label asp-for="Input.Address" class="form-label">Address</label>
+                            <span asp-validation-for="Input.Address" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h4 class="mb-3">Education & Career</h4>
+                        <hr />
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <select asp-for="Input.HSGrad" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                            <label asp-for="Input.HSGrad" class="form-label">High School Graduate</label>
+                            <span asp-validation-for="Input.HSGrad" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.SchoolName" class="form-control" />
+                            <label asp-for="Input.SchoolName" class="form-label">School Name</label>
+                            <span asp-validation-for="Input.SchoolName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.Grade" class="form-control" />
+                            <label asp-for="Input.Grade" class="form-label">Current Grade/Year</label>
+                            <span asp-validation-for="Input.Grade" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <select asp-for="Input.Employed" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                            <label asp-for="Input.Employed" class="form-label">Currently Employed</label>
+                            <span asp-validation-for="Input.Employed" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.BusinessName" class="form-control" />
+                            <label asp-for="Input.BusinessName" class="form-label">Employer/Business Name</label>
+                            <span asp-validation-for="Input.BusinessName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h4 class="mb-3">Talents & Interests</h4>
+                        <hr />
+                    </div>
+                    
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <textarea asp-for="Input.Talents" class="form-control" style="height: 100px"></textarea>
+                            <label asp-for="Input.Talents" class="form-label">Your Skills, Talents & Interests</label>
+                            <span asp-validation-for="Input.Talents" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h4 class="mb-3">Emergency Contacts</h4>
+                        <hr />
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.EmerName" class="form-control" />
+                            <label asp-for="Input.EmerName" class="form-label">Emergency Contact Name</label>
+                            <span asp-validation-for="Input.EmerName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.EmerRelation" class="form-control" />
+                            <label asp-for="Input.EmerRelation" class="form-label">Relationship</label>
+                            <span asp-validation-for="Input.EmerRelation" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <div class="form-floating">
+                            <input asp-for="Input.EmerPhoneNum1" class="form-control" />
+                            <label asp-for="Input.EmerPhoneNum1" class="form-label">Emergency Phone Number</label>
+                            <span asp-validation-for="Input.EmerPhoneNum1" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="update-profile-button" type="submit" class="btn btn-primary">Save Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

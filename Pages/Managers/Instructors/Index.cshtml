@@ -1,0 +1,195 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Manager.Instructors.IndexModel
+@{
+    ViewData["Title"] = "All Instructors";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-person-badge me-2"></i> All Instructors
+            </h1>
+            <p class="text-muted mt-1">View and manage all approved instructors in the K4S program.</p>
+        </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="card mb-4">
+        <div class="card-body" style="padding: 1rem 1.5rem;">
+            <form method="get" class="d-flex gap-3 align-items-end flex-wrap">
+                <div style="flex: 1; min-width: 250px;">
+                    <label class="form-label">Search Instructors</label>
+                    <div class="input-group">
+                        <input type="text" name="search" value="@Model.SearchTerm"
+                               class="form-control" placeholder="Search by name, email, or specialty..." />
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div style="min-width: 180px;">
+                    <label class="form-label">Status Filter</label>
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="" selected="@(string.IsNullOrEmpty(Model.StatusFilter) ? "selected" : null)">All Statuses</option>
+                        <option value="Active" selected="@(Model.StatusFilter == "Active" ? "selected" : null)">Active</option>
+                        <option value="Inactive" selected="@(Model.StatusFilter == "Inactive" ? "selected" : null)">Inactive</option>
+                    </select>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.StatusFilter))
+                {
+                <div>
+                    <a asp-page="./Index" class="btn btn-secondary" style="margin-top: 1.75rem;">
+                        <i class="bi bi-x-circle me-1"></i> Clear
+                    </a>
+                </div>
+                }
+            </form>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div style="font-size: 2rem; font-weight: 700; color: #4F0C28;">@Model.TotalCount</div>
+                    <div class="text-muted">Total Instructors</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div style="font-size: 2rem; font-weight: 700; color: #28a745;">@Model.ActiveCount</div>
+                    <div class="text-muted">Active</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div style="font-size: 2rem; font-weight: 700; color: #6c757d;">@Model.InactiveCount</div>
+                    <div class="text-muted">Inactive</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="alert alert-info mb-3">
+        <i class="bi bi-info-circle"></i> Showing @Model.Instructors.Count of @Model.TotalRecords instructors
+    </div>
+
+    <!-- Instructors Table -->
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-list-ul me-2"></i> Instructor Records
+            <span class="badge ms-1" style="background-color: #C5D2F8; color: #4F0C28;">@Model.Instructors.Count</span>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Instructors.Any())
+            {
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Specialty</th>
+                            <th>Hire Date</th>
+                            <th>Approved By</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var inst in Model.Instructors)
+                        {
+                        <tr>
+                            <td><strong>@inst.FullName</strong></td>
+                            <td>@inst.Email</td>
+                            <td>@(inst.Speciality ?? "—")</td>
+                            <td>@(inst.HireDate.HasValue ? inst.HireDate.Value.ToString("MM/dd/yyyy") : "—")</td>
+                            <td>@inst.ApprovedBy</td>
+                            <td>
+                                <span class="badge @(inst.Status == "Active" ? "bg-success" : "bg-secondary")">
+                                    @inst.Status
+                                </span>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Controls -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="card-footer">
+                    <nav aria-label="Instructor pagination">
+                        <ul class="pagination justify-content-center mb-0">
+                            <!-- First Page -->
+                            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                                <a class="page-link" href="?PageNumber=1&search=@Model.SearchTerm&status=@Model.StatusFilter">
+                                    <i class="bi bi-chevron-double-left"></i>
+                                </a>
+                            </li>
+
+                            <!-- Previous Page -->
+                            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                                <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)&search=@Model.SearchTerm&status=@Model.StatusFilter">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+
+                            <!-- Page Numbers -->
+                            @{
+                                var startPage = Math.Max(1, Model.PageNumber - 2);
+                                var endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+                            }
+
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                                    <a class="page-link" href="?PageNumber=@i&search=@Model.SearchTerm&status=@Model.StatusFilter">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            <!-- Next Page -->
+                            <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link" href="?PageNumber=@(Model.PageNumber + 1)&search=@Model.SearchTerm&status=@Model.StatusFilter">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+
+                            <!-- Last Page -->
+                            <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link" href="?PageNumber=@Model.TotalPages&search=@Model.SearchTerm&status=@Model.StatusFilter">
+                                    <i class="bi bi-chevron-double-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="text-center text-muted mt-2">
+                        <small>Page @Model.PageNumber of @Model.TotalPages</small>
+                    </div>
+                </div>
+            }
+            }
+            else
+            {
+            <div class="text-center py-5">
+                <i class="bi bi-person-badge" style="font-size: 3rem; color: #ccc;"></i>
+                <p class="text-muted mt-3">No instructors found matching your criteria.</p>
+                @if (!string.IsNullOrEmpty(Model.SearchTerm) || !string.IsNullOrEmpty(Model.StatusFilter))
+                {
+                <a asp-page="./Index" class="btn btn-secondary">Clear Filters</a>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</div>

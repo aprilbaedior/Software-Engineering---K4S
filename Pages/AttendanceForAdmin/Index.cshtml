@@ -1,0 +1,268 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.AttendanceForAdmin.IndexModel
+
+@{
+    var emailToName = ViewData["EmailToName"] as Dictionary<string, string>;
+}
+
+
+@{
+    ViewData["Title"] = Model.SessionTitle;
+}
+
+<link rel="stylesheet" href="~/css/attendance.css" asp-append-version="true" />
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<div class="attendance-header">
+    <div class="attendance-title">
+        <h2 class="session-title">@Model.SessionTitle</h2>
+        <p class="schedule-time">Schedule: @Model.ScheduleTime</p>
+    </div>
+    
+    <div class="attendance-actions">
+        <button id="exportBtn" class="btn-export"><i class="fas fa-file-export"></i> Export</button>
+        <button id="printBtn" class="btn-print" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+        
+        @* REMOVED: Enroll Student button - Only Managers/Admins can enroll students through proper channels *@
+        @* Instructors should only manage attendance for already-enrolled students *@
+        
+        <div class="filter-dropdown">
+            <button class="btn-filter"><i class="fas fa-filter"></i> Filter</button>
+            <div class="filter-content">
+                <a href="#" data-filter="all">All Students</a>
+                <a href="#" data-filter="perfect">Perfect Attendance</a>
+                <a href="#" data-filter="absent">Has Absences</a>
+                <a href="#" data-filter="late">Has Late Arrivals</a>
+                <a href="#" data-filter="unmarked">Has Unmarked</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="attendance-summary">
+    <div class="attendance-stats">
+        <div class="stat-card">
+            <span class="stat-label">Total Students</span>
+            <span class="stat-value" id="totalStudents">@Model.AttendanceRecords.Select(a => a.Email).Distinct().Count()</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Present</span>
+            <span class="stat-value" id="presentCount">0</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Absent</span>
+            <span class="stat-value" id="absentCount">0</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Late</span>
+            <span class="stat-value" id="lateCount">0</span>
+        </div>
+    </div>
+
+    <div class="attendance-progress-container">
+        <div class="attendance-container">
+            <label>Class Overall Attendance</label>
+            <div class="progress-wrapper">
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar"
+                         style="width: @(Model.ClassAttendancePercentage)%;"
+                         aria-valuenow="@(Model.ClassAttendancePercentage)"
+                         aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+                <span class="progress-percentage">@(Model.ClassAttendancePercentage.ToString("0.0"))%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bulk-actions">
+    <div class="select-all-container">
+        <input type="checkbox" id="selectAll" class="checkbox-custom">
+        <label for="selectAll" class="checkbox-custom-label">Select All</label>
+    </div>
+    <div class="bulk-dropdown">
+        <button class="btn-bulk" id="bulkActionBtn" disabled><i class="fas fa-users"></i> Bulk Action</button>
+        <div class="bulk-content">
+            <a href="#" data-action="Present">Mark Present</a>
+            <a href="#" data-action="Absent">Mark Absent</a>
+            <a href="#" data-action="Late">Mark Late</a>
+            <a href="#" data-action="Excused">Mark Excused</a>
+        </div>
+    </div>
+    <div>
+        <button class="btn-apply-date" id="applyDateBtn" disabled><i class="fas fa-calendar-check"></i> Apply To Date</button>
+        <div class="date-selector" id="dateSelector" style="display: none;">
+            <div class="date-selector-header">
+                <h4>Select Date to Apply</h4>
+                <button id="closeDateSelector"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="date-options">
+                @for (int di = 0; di < Model.SessionDates.Count; di++)
+                {
+                    <div class="date-option" data-date="@Model.SessionDates[di].ToString("yyyy-MM-dd")">
+                        <input type="checkbox" id="date-@di" class="date-checkbox">
+                        <label for="date-@di">@Model.SessionDates[di].ToString("ddd MM/dd")</label>
+                    </div>
+                }
+            </div>
+            <button id="applyToSelectedDates" class="btn-apply">Apply</button>
+        </div>
+    </div>
+</div>
+
+<div class="attendance-table-container">
+    <table class="attendance-table">
+        <thead>
+            <tr>
+                <th class="select-column">
+                    <span class="sr-only">Select</span>
+                </th>
+                <th class="student-column">Student Name</th>
+                <th class="nav-column">
+                    <a href="?sectionID=@Model.SectionID&weekOffset=@(Model.WeekOffset - 1)" class="nav-arrow">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </th>
+                @foreach (var sd in Model.SessionDates)
+                {
+                    <th class="date-column" data-date="@sd.ToString("yyyy-MM-dd")">
+                        <div class="date-header">
+                            <span class="day-name">@sd.ToString("ddd")</span>
+                            <span class="day-date">@sd.ToString("MM/dd")</span>
+                        </div>
+                    </th>
+                }
+                <th class="nav-column">
+                    @{
+                        var today = DateTime.UtcNow.Date;
+                        var lastSessionDate = Model.SessionDates.LastOrDefault();
+                    }
+                    @if (lastSessionDate != default && lastSessionDate.AddDays(7) <= today)
+                    {
+                        <a href="?sectionID=@Model.SectionID&weekOffset=@(Model.WeekOffset + 1)" class="nav-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    }
+                </th>
+                <th class="summary-column">Summary</th>
+                <th class="action-column">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var email in Model.AttendanceRecords.Select(a => a.Email).Distinct())
+            {
+                <tr class="student-row" data-email="@email">
+                    <td class="select-column">
+                        <input type="checkbox" class="student-checkbox checkbox-custom" id="select-@email.GetHashCode()">
+                        <label for="select-@email.GetHashCode()" class="checkbox-custom-label"></label>
+                    </td>
+                    <td class="student-column">
+                        <div class="student-info">
+                            <span class="student-email">
+                                @(emailToName != null && emailToName.ContainsKey(email) ? emailToName[email] : email)
+                            </span>
+
+                            <i class="fas fa-info-circle student-info-icon" data-email="@email"></i>
+                        </div>
+                    </td>
+                    <td></td>
+                    @foreach (var sd in Model.SessionDates)
+                    {
+                        var record = Model.AttendanceRecords
+                            .FirstOrDefault(a => a.Email == email && a.CurrentDate.Date == sd.Date);
+                        var status = record?.AttendanceStatus ?? "Not Marked";
+                        var statusClass = status.ToLower().Replace(" ", "-");
+                        <td class="attendance-cell" data-date="@sd.ToString("yyyy-MM-dd")">
+                            <form class="attendance-form" method="post" asp-page-handler="PostAttendance">
+                                <input type="hidden" name="email" value="@email" />
+                                <input type="hidden" name="date" value="@sd.ToString("yyyy-MM-dd")" />
+                                <input type="hidden" name="sectionID" value="@Model.SectionID" />
+                                <select name="status" class="status-dropdown status-@statusClass" onchange="submitAttendance(this)">
+                                    <option value="Not Marked" selected="@(record?.AttendanceStatus == "Not Marked" ? "selected" : null)">Not Marked</option>
+                                    <option value="Present" selected="@(record?.AttendanceStatus == "Present" ? "selected" : null)">Present</option>
+                                    <option value="Absent" selected="@(record?.AttendanceStatus == "Absent" ? "selected" : null)">Absent</option>
+                                    <option value="Late" selected="@(record?.AttendanceStatus == "Late" ? "selected" : null)">Late</option>
+                                    <option value="Excused" selected="@(record?.AttendanceStatus == "Excused" ? "selected" : null)">Excused</option>
+                                </select>
+                            </form>
+                        </td>
+                    }
+                    <td></td>
+                    <td class="summary-column">
+                        <div class="attendance-summary-bar">
+                            <div class="attendance-bar-segment present" style="width: 0%;" data-count="0"></div>
+                            <div class="attendance-bar-segment late" style="width: 0%;" data-count="0"></div>
+                            <div class="attendance-bar-segment excused" style="width: 0%;" data-count="0"></div>
+                            <div class="attendance-bar-segment absent" style="width: 0%;" data-count="0"></div>
+                        </div>
+                    </td>
+                    <td class="action-column">
+                        @{
+                            var studentScheduleID = Model.AttendanceRecords
+                                .FirstOrDefault(a => a.Email == email)?.ScheduleID ?? 0;
+                        }
+                        <a href="/AttendanceForStudent/Index?id=@studentScheduleID" class="btn-action">
+                            <i class="fas fa-user"></i> View
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Student Details Modal -->
+<div id="studentModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalStudentEmail"></h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="student-metrics">
+                <div class="metric">
+                    <span class="metric-label">Overall Attendance</span>
+                    <span class="metric-value" id="studentAttendance">N/A</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Present</span>
+                    <span class="metric-value" id="studentPresent">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Absent</span>
+                    <span class="metric-value" id="studentAbsent">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Late</span>
+                    <span class="metric-value" id="studentLate">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Excused</span>
+                    <span class="metric-value" id="studentExcused">0</span>
+                </div>
+            </div>
+            <div class="attendance-trend">
+                <h4>Attendance Trend</h4>
+                <div class="trend-chart">
+                    <div class="trend-line">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            <div class="attendance-history">
+                <h4>Recent Activity</h4>
+                <ul id="studentHistory">
+                    <!-- Will be populated by JavaScript -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* REMOVED: Enroll Student Modal - No longer needed for instructors *@
+
+<!-- Include JavaScript file -->
+<script src="~/js/attendance.js"></script>

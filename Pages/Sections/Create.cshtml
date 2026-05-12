@@ -1,0 +1,105 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Sections.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create New Section for @Model.ServiceName (@Model.ServiceID.Trim())</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <input type="hidden" name="serviceID" value="@Model.ServiceID" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            @* Hidden fields to pass ServiceID back to the server *@
+            <input type="hidden" name="serviceID" value="@Model.ServiceID" />
+            <input type="hidden" asp-for="Spring2026_Group1_Sections.ServiceID" />
+
+            @* SectionID is auto-generated - removed from form *@
+
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.ServiceName" class="control-label">Service Name</label>
+                <input asp-for="Spring2026_Group1_Sections.ServiceName" class="form-control" readonly="readonly" />
+                <span asp-validation-for="Spring2026_Group1_Sections.ServiceName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.Capacity" class="control-label">Capacity</label>
+                <input asp-for="Spring2026_Group1_Sections.Capacity" class="form-control" type="number" min="1" required />
+                <span asp-validation-for="Spring2026_Group1_Sections.Capacity" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.InstructorID" class="control-label">Instructor (Optional)</label>
+                <select asp-for="Spring2026_Group1_Sections.InstructorID" class="form-control" asp-items="@Model.InstructorList">
+                    <option value="">Assign Later</option>
+                </select>
+                <span asp-validation-for="Spring2026_Group1_Sections.InstructorID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.StartDate" class="control-label">Start Date</label>
+                <input asp-for="Spring2026_Group1_Sections.StartDate" class="form-control" type="date" />
+                <span asp-validation-for="Spring2026_Group1_Sections.StartDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.EndDate" class="control-label">End Date</label>
+                <input asp-for="Spring2026_Group1_Sections.EndDate" class="form-control" type="date" />
+                <span asp-validation-for="Spring2026_Group1_Sections.EndDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Meeting Days <small class="text-muted">(select all that apply)</small></label>
+                <div class="d-flex flex-wrap gap-2 mt-1">
+                    @foreach (var day in new[] { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday" })
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="SelectedDays"
+                                   value="@day" id="day_@day" />
+                            <label class="form-check-label" for="day_@day">@day</label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.StartTime" class="control-label">Start Time</label>
+                <input asp-for="Spring2026_Group1_Sections.StartTime" class="form-control" type="time" />
+                <span asp-validation-for="Spring2026_Group1_Sections.StartTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.EndTime" class="control-label">End Time</label>
+                <input asp-for="Spring2026_Group1_Sections.EndTime" class="form-control" type="time"/>
+                <span asp-validation-for="Spring2026_Group1_Sections.EndTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Spring2026_Group1_Sections.Status" class="control-label">Status</label>
+                <select asp-for="Spring2026_Group1_Sections.Status" class="form-control">
+                    <option value="">Select from list</option>
+                    <option value="Active">Active</option>
+                    <option value="Open">Open</option>
+                    <option value="Ended">Ended</option>
+                </select>
+                <span asp-validation-for="Spring2026_Group1_Sections.Status" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index" asp-route-serviceID="@Model.ServiceID">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

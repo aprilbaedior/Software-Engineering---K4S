@@ -1,0 +1,111 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Manager.Certificates.DetailsModel
+@{
+    ViewData["Title"] = "Certificate Details";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="section-title mb-0">
+                <i class="bi bi-file-earmark-check me-2"></i> Certificate Details
+            </h1>
+            <p class="text-muted mt-1">Certificate #@Model.Certificate.CertificateID</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-page="./Certificate" asp-route-id="@Model.Certificate.CertificateID"
+               class="btn btn-primary" target="_blank">
+                <i class="fas fa-certificate me-1"></i> View Certificate
+            </a>
+            <a href="/Managers/Certificates/Certificate?id=@Model.Certificate.CertificateID&autoprint=true"
+               class="btn" style="background-color:#C5D2F8; color:#4F0C28; font-weight:600;"
+               target="_blank">
+                <i class="fas fa-print me-1"></i> Print Certificate
+            </a>
+            <a asp-page="./Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Student Info -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="bi bi-person me-2"></i> Student Information
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Name</dt>
+                        <dd class="col-sm-8"><strong>@Model.Certificate.StudentName</strong></dd>
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">@Model.Certificate.StudentEmail</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificate Info -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="bi bi-award me-2"></i> Certificate Information
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Certificate #</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge" style="background-color:#4F0C28;color:white;font-size:0.9rem;">
+                                #@Model.Certificate.CertificateID
+                            </span>
+                        </dd>
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">
+                            <span class="status-badge approved">@(Model.Certificate.CertificateStatus ?? "Issued")</span>
+                        </dd>
+                        <dt class="col-sm-4">Issued Date</dt>
+                        <dd class="col-sm-8">@Model.Certificate.IssuedDate.ToString("MMMM dd, yyyy")</dd>
+                        <dt class="col-sm-4">Issued By</dt>
+                        <dd class="col-sm-8">@Model.Certificate.IssuedBy</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service Info -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="bi bi-briefcase me-2"></i> Service Information
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Service</dt>
+                        <dd class="col-sm-8"><strong>@Model.Certificate.ServiceName</strong></dd>
+                        <dt class="col-sm-4">Service ID</dt>
+                        <dd class="col-sm-8">@Model.Certificate.ServiceID?.Trim()</dd>
+                        <dt class="col-sm-4">Section</dt>
+                        <dd class="col-sm-8">Section #@Model.Certificate.SectionID</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="bi bi-sticky me-2"></i> Notes
+                </div>
+                <div class="card-body">
+                    <p class="mb-0 text-muted" style="font-size:0.95rem; line-height:1.6;">
+                        @(string.IsNullOrEmpty(Model.Certificate.Notes) ? "No notes recorded." : Model.Certificate.Notes)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

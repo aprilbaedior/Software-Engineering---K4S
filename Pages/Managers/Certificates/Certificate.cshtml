@@ -1,0 +1,248 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Manager.Certificates.CertificateModel
+@{
+    ViewData["Title"] = "Certificate";
+    Layout = null;
+    bool autoPrint = HttpContext.Request.Query["autoprint"] == "true";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certificate - @Model.Certificate.StudentName</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #f5f5f5;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            width: 100%;
+            max-width: 1050px;
+        }
+        .btn-action {
+            padding: 0.5rem 1.2rem;
+            border-radius: 7px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: opacity 0.2s;
+        }
+        .btn-action:hover { opacity: 0.85; }
+        .btn-print { background: #4F0C28; color: white; }
+        .btn-back  { background: #e9ecef; color: #495057; }
+
+        /* Certificate sized for landscape letter: 11in x 8.5in */
+        .cert-page {
+            width: 10in;
+            height: 7.5in;
+            background: white;
+            border: 14px solid #4F0C28;
+            border-radius: 4px;
+            position: relative;
+            padding: 0.55in 0.75in;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        /* Corner decorations */
+        .corner { position: absolute; width: 55px; height: 55px; border: 4px solid #C5D2F8; }
+        .corner.tl { top: 14px; left: 14px; border-right: none; border-bottom: none; }
+        .corner.tr { top: 14px; right: 14px; border-left: none; border-bottom: none; }
+        .corner.bl { bottom: 14px; left: 14px; border-right: none; border-top: none; }
+        .corner.br { bottom: 14px; right: 14px; border-left: none; border-top: none; }
+
+        .cert-header { text-align: center; }
+        .cert-logo-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4F0C28;
+            letter-spacing: 5px;
+        }
+        .cert-org {
+            font-size: 0.72rem;
+            color: #999;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 0.1rem;
+        }
+
+        .divider {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #C5D2F8, #4F0C28, #C5D2F8, transparent);
+            margin: 0.3rem 0;
+        }
+
+        .cert-middle { text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.25rem; }
+
+        .cert-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 0.75rem;
+            color: #999;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+        .cert-of-completion {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #4F0C28;
+            line-height: 1.1;
+        }
+        .cert-presented { color: #6c757d; font-size: 0.82rem; margin-top: 0.3rem; }
+        .cert-name {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: #4F0C28;
+            font-style: italic;
+            line-height: 1.1;
+        }
+        .cert-for { color: #6c757d; font-size: 0.82rem; }
+        .cert-service {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.25rem;
+            color: #4F0C28;
+            font-weight: 700;
+            display: inline-block;
+            border-bottom: 2px solid #C5D2F8;
+            padding-bottom: 0.15rem;
+        }
+        .cert-desc {
+            color: #6c757d;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 2rem;
+        }
+        .cert-sig { text-align: center; flex: 1; }
+        .cert-sig-line { border-top: 1.5px solid #4F0C28; margin-bottom: 0.3rem; }
+        .cert-sig-label { font-size: 0.65rem; color: #999; letter-spacing: 1.5px; text-transform: uppercase; }
+        .cert-sig-value { font-weight: 600; color: #4F0C28; font-size: 0.8rem; }
+
+        .cert-seal {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: #4F0C28;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 4px solid #C5D2F8;
+            flex-shrink: 0;
+            gap: 0.1rem;
+        }
+        .cert-seal span { font-size: 0.48rem; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* Print styles */
+        @@media print {
+            body { background: white; padding: 0; margin: 0; }
+            .action-bar { display: none !important; }
+            .cert-page {
+                box-shadow: none;
+                width: 100%;
+                height: 100vh;
+                border-width: 10px;
+                page-break-inside: avoid;
+            }
+            @@page { size: landscape; margin: 0.3cm; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="action-bar">
+        <button class="btn-action btn-print" onclick="window.print()">🖨 Print Certificate</button>
+        <a href="/Managers/Certificates/Details?id=@Model.Certificate.CertificateID" class="btn-action btn-back">← Details</a>
+        <a href="/Managers/Certificates/Index" class="btn-action btn-back">All Certificates</a>
+    </div>
+
+    <div class="cert-page">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+
+        <!-- Header -->
+        <div class="cert-header">
+            <div class="cert-logo-text">K4S</div>
+            <div class="cert-org">Krumpin 4 Success, Inc.</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Middle -->
+        <div class="cert-middle">
+            <div class="cert-title">Certificate</div>
+            <div class="cert-of-completion">of Completion</div>
+            <p class="cert-presented">This certificate is proudly presented to</p>
+            <div class="cert-name">@Model.Certificate.StudentName</div>
+            <p class="cert-for">In recognition of successful completion of</p>
+            <div class="cert-service">@Model.Certificate.ServiceName</div>
+            <p class="cert-desc">
+                Your dedication, commitment, and perseverance have made this achievement possible.<br />
+                Krumpin 4 Success commends you on this milestone.
+            </p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Footer -->
+        <div class="cert-footer">
+            <div class="cert-sig">
+                <div class="cert-sig-line"></div>
+                <div class="cert-sig-label">Issued By</div>
+                <div class="cert-sig-value">@Model.Certificate.IssuedBy</div>
+            </div>
+            <div class="cert-seal">
+                <span>Official</span>
+                K4S
+                <span>Seal</span>
+            </div>
+            <div class="cert-sig">
+                <div class="cert-sig-line"></div>
+                <div class="cert-sig-label">Date Issued</div>
+                <div class="cert-sig-value">@Model.Certificate.IssuedDate.ToString("MMMM dd, yyyy")</div>
+            </div>
+        </div>
+    </div>
+
+    @if (autoPrint)
+    {
+        <script>window.addEventListener('load', () => window.print());</script>
+    }
+</body>
+</html>

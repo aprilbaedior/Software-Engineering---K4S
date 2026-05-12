@@ -1,0 +1,123 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Sections.DetailsModel
+@{
+    ViewData["Title"] = "Section Details";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="section-title">
+            <i class="bi bi-calendar3 me-2"></i> Section Details
+        </h1>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-info-circle me-2"></i> @Model.ServiceName - Section #@Model.Spring2026_Group1_Sections.SectionID
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Section ID</dt>
+                <dd class="col-sm-9"><strong>#@Model.Spring2026_Group1_Sections.SectionID</strong></dd>
+
+                <dt class="col-sm-3">Service</dt>
+                <dd class="col-sm-9">@Model.ServiceName</dd>
+
+                <dt class="col-sm-3">Meeting Days</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.Spring2026_Group1_Sections.WeekDay))
+                    {
+                        foreach (var day in Model.Spring2026_Group1_Sections.WeekDay.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            <span class="badge me-1" style="background-color:#C5D2F8;color:#4F0C28;font-size:0.82rem;">@day.Trim()</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not set</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Time</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Spring2026_Group1_Sections.StartTime.HasValue && Model.Spring2026_Group1_Sections.EndTime.HasValue)
+                    {
+                        <span>@DateTime.Today.Add(Model.Spring2026_Group1_Sections.StartTime.Value).ToString("hh:mm tt") - @DateTime.Today.Add(Model.Spring2026_Group1_Sections.EndTime.Value).ToString("hh:mm tt")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Time not set</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Duration</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Spring2026_Group1_Sections.StartDate.HasValue && Model.Spring2026_Group1_Sections.EndDate.HasValue)
+                    {
+                        <span>@Model.Spring2026_Group1_Sections.StartDate.Value.ToString("MM/dd/yyyy") - @Model.Spring2026_Group1_Sections.EndDate.Value.ToString("MM/dd/yyyy")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Dates not set</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">
+                    <span class="badge @(Model.Spring2026_Group1_Sections.Status == "Active" ? "bg-success" : "bg-secondary")">
+                        @Model.Spring2026_Group1_Sections.Status
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">Capacity</dt>
+                <dd class="col-sm-9">@Model.Spring2026_Group1_Sections.Capacity students</dd>
+
+                <dt class="col-sm-3">Assigned Instructor</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.AssignedInstructor))
+                    {
+                        <span>
+                            <i class="bi bi-person-check text-success me-2"></i>
+                            <strong>@Model.AssignedInstructor</strong>
+                            <br />
+                            <small class="text-muted">@Model.AssignedInstructorEmail</small>
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            <i class="bi bi-person-x me-2"></i>
+                            No instructor assigned
+                        </span>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer">
+            @* Instructor-specific behavior: hide global Back/Edit and show My Sections. *@
+            @if (User.IsInRole("Instructor"))
+            {
+                @* Link back to InstructorSections/Index (instead of the new page) *@
+                <a asp-page="/InstructorSections/Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back to My Sections
+                </a>
+                //added a section to view students
+                
+                <a asp-page="/Instructors/DisplinaryHistory" asp-route-SectionID="@Model.Spring2026_Group1_Sections.SectionID" class="btn btn-secondary">
+                       View Students / Disciplinary Roster
+                </a>
+               
+            }
+            else
+            {
+                @* Managers/Admins keep existing navigation *@
+                <a asp-page="./Edit" asp-route-id="@Model.Spring2026_Group1_Sections?.SectionID" class="btn btn-primary">
+                    <i class="bi bi-pencil me-1"></i> Edit Section
+                </a>
+                <a asp-page="./Index" asp-route-serviceID="@Model.ServiceID" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back to List
+                </a>
+            }
+        </div>
+    </div>
+</div>

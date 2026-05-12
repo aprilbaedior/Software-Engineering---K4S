@@ -1,0 +1,51 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Services.ServiceListingModel
+
+@{
+    ViewData["Title"] = "Services";
+}
+
+<h1>ServiceListing</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2023_Group1_Services[0].ServiceName )
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2023_Group1_Services[0].ServiceFrequency)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2023_Group1_Services[0].ServiceDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2023_Group1_Services[0].ServiceHours)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Spring2023_Group1_Services) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceFrequency)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceHours)
+            </td>
+            <td>
+                <form method="post">
+                    <input type="submit" value="Enroll" asp-page="../Scheduling/CreateSchedule" asp-route-serviceID="@item.ServiceID"/>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

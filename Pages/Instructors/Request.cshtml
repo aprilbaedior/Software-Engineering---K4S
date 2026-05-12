@@ -1,0 +1,70 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Instructors.RequestModel
+@{
+    ViewData["Title"] = "Instructor Application";
+}
+
+<div class="container py-4">
+    <div class="card" style="border: 2px solid #C5D2F8;">
+        <div class="card-header" style="background-color: #4F0C28; color: white;">
+            <h2 class="mb-0">
+                <i class="bi bi-person-badge me-2"></i>Instructor Application
+            </h2>
+        </div>
+        <div class="card-body">
+            <p class="lead">Apply to become an instructor and share your expertise with K4S students.</p>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>@TempData["ErrorMessage"]
+                </div>
+            }
+
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <input asp-for="FullName" class="form-control" required placeholder="Enter your full name" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input asp-for="Email" class="form-control" type="email" required readonly style="background-color: #f0f0f0;" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Speciality/Expertise <span class="text-danger">*</span></label>
+                    <input asp-for="Speciality" class="form-control" placeholder="e.g., Dance, Music Production, Math Tutoring..." />
+                    <small class="form-text text-muted">What subject or skill would you like to teach?</small> 
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Why do you want to be an instructor? <span class="text-danger">*</span></label>
+                    <textarea asp-for="Justification" class="form-control" rows="6" required
+                              placeholder="Tell us about your relevant experience and why you'd be a great instructor..."></textarea>
+                    <span asp-validation-for="Justification" class="text-danger"></span>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>What happens next?</strong> A manager will review your application. If approved, you'll be granted Instructor access.
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-page="/Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary" style="background-color: #4F0C28; border: none;">
+                        <i class="bi bi-check-circle me-1"></i>Submit Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

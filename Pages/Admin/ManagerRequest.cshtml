@@ -1,0 +1,50 @@
+@page
+@model CS395SI_Spring2023_Group1.Pages.Admin.ManagerRequestsModel
+@using CS395SI_Spring2023_K4S.Model;
+@{
+    ViewData["Title"] = "Manager Role Requests";
+}
+
+<h2>Manager Role Requests</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+<div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+<div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Justification</th>
+            <th>Request Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var request in Model.PendingRequests)
+    {
+        <tr>
+            <td>@request.FullName</td>
+            <td>@request.Email</td>
+            <td>@request.Justification</td>
+            <td>@request.RequestDate.ToString("g")</td>
+            <td>@request.Status</td>
+            <td>
+                <form method="post" class="d-flex gap-1">
+                    <input type="hidden" name="requestId" value="@request.RequestID" />
+                    <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                    <button type="submit" name="action" value="deny" class="btn btn-danger btn-sm">Deny</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

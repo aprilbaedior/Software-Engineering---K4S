@@ -1,0 +1,55 @@
+﻿@page
+@model CS395SI_Spring2023_Group1.Pages.Schedules.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+
+}
+
+<h1>My Services</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2023_Group1_Schedules[0].Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2023_Group1_Schedules[0].ServiceID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2023_Group1_Schedules[0].SectionID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spring2023_Group1_Schedules[0].ScheduleStatus)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Spring2023_Group1_Schedules) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ServiceID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SectionID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScheduleStatus)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.ScheduleID">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.ScheduleID">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ScheduleID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
