@@ -1,6 +1,7 @@
 # Krumpin 4 Success — Youth Program Management Platform
 
-![K4S Logo](k4slogo_mini_nobackground.png)
+<img width="1536" height="1024" alt="k4slogo_mini_nobackground" src="https://github.com/user-attachments/assets/3e92ad60-5009-4c6d-a5cb-b78458790988" />
+
 
 A full-stack web application built for **Krumpin 4 Success, Inc.**, a nonprofit organization focused on decreasing risk-taking behaviors and youth recidivism by providing creative, academic, and career-focused programming for youth ages 13–24.
 
